@@ -8,6 +8,7 @@ import Hero from '@/components/Hero';
 import Waves from '@/components/Waves';
 import DomeGallery from '@/components/DomeGallery';
 import Cubes from '@/components/Cubes';
+import OrizonBanner from '@/components/OrizonBanner';
 
 
 // Register GSAP plugins
@@ -24,6 +25,41 @@ export default function Home() {
       nullTargetWarn: false
     });
 
+    // Page load animations
+    const tl = gsap.timeline();
+    
+    // Set initial states
+    gsap.set('.page-section', {
+      opacity: 0,
+      y: 50
+    });
+
+    // Animate sections in order
+    tl.to('.header-section', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power2.out"
+    })
+    .to('.cubes-section', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power2.out"
+    }, "-=0.4")
+    .to('.banner-section', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power2.out"
+    }, "-=0.4")
+    .to('.gallery-section', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power2.out"
+    }, "-=0.4");
+
     // Cleanup on unmount
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
@@ -34,9 +70,12 @@ export default function Home() {
     <div className="min-h-screen bg-primary p-4">
       {/* Website Container with Primary Color Border Frame */}
       <div className="relative min-h-screen bg-secondary border-4 border-primary rounded-lg overflow-hidden" style={{ position: 'relative' }}>
-        {/* Animated Header */}
-        <Header />
-        <section className="relative w-full h-64 overflow-hidden border-b-2 border-primary pt-2" style={{ position: 'relative', zIndex: 1 }}>
+     
+        <div className="header-section page-section">
+          <Header />
+        </div>
+        
+        <section className="cubes-section page-section relative w-full h-64 overflow-hidden border-b-2 border-primary pt-2" style={{ position: 'relative', zIndex: 1 }}>
           <Cubes 
      gridSize={30}
      cubeSize={20}
@@ -51,10 +90,11 @@ export default function Home() {
           />
         </section>
         
+        <div className="banner-section page-section">
+          <OrizonBanner />
+        </div>
 
-      
-        
-        <section className="relative h-[150vh] bg-secondary">
+        <section className="gallery-section page-section relative h-[150vh] bg-secondary">
           <DomeGallery
             dragSensitivity={10}
             enlargeTransitionMs={200}
@@ -69,7 +109,7 @@ export default function Home() {
           />
         </section>
 
-
+ {/* Animated Header */}
 
 
       </div>
