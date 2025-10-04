@@ -96,13 +96,13 @@ export default function Header() {
   return (
     <header 
       ref={headerRef}
-      className="site-head bg-secondary text-primary font-montserrat w-full"
+      className="site-head bg-primary text-secondary font-montserrat w-full"
     >
       {/* Header Grid Layout - 16 Column Grid */}
-      <div className="grid grid-cols-16 w-full h-16 md:h-24 border-b border-primary">
+      <div className="grid grid-cols-16 w-full h-16 md:h-24 border-b border-secondary">
         
         {/* Logo Section - 2 columns */}
-        <div ref={logoRef} className="col-span-2 flex items-center justify-center border-r border-primary px-2 md:px-4">
+        <div ref={logoRef} className="col-span-2 flex items-center justify-center border-r border-secondary px-2 md:px-4">
           <Image
             src="/Full-logo.png"
             alt="Orizon Full Logo"
@@ -114,14 +114,14 @@ export default function Header() {
         </div>
 
         {/* Console Section - 3 columns */}
-        <div ref={consoleRef} className="col-span-3 hidden md:flex py-4 border-r border-primary px-4">
+        <div ref={consoleRef} className="col-span-3 hidden md:flex py-4 border-r border-secondary px-4">
           <div className="text-xs font-mono text-left">
             {consoleText}
           </div>
         </div>
 
         {/* Navigation - 6 columns */}
-        <nav ref={navRef} className="col-span-6 flex items-center justify-center border-r border-primary px-2 md:px-6">
+        <nav ref={navRef} className="col-span-6 flex items-center justify-center border-r border-secondary px-2 md:px-6">
           <div className="flex items-center justify-between w-full px-2 md:px-4">
             <a href="#about" className="text-xs md:text-sm font-medium hover:opacity-70 transition-opacity uppercase tracking-wide group relative">
               <span className="absolute -left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">→</span>
@@ -139,25 +139,25 @@ export default function Header() {
         </nav>
 
         {/* Social Icons - 1 column */}
-        <div ref={socialsRef} className="col-span-1 border-r border-primary">
+        <div ref={socialsRef} className="col-span-1 border-r border-secondary">
           <div className="h-full flex flex-col">
-            <a href="https://codepen.io" className="flex-1 border-b border-primary flex items-center justify-center relative overflow-hidden group">
-              <div className="absolute inset-0 bg-primary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></div>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="relative z-10 text-primary group-hover:text-secondary transition-colors duration-300 md:w-5 md:h-5">
+            <a href="https://codepen.io" className="flex-1 border-b border-secondary flex items-center justify-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></div>
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="relative z-10 text-secondary group-hover:text-primary transition-colors duration-300 md:w-5 md:h-5">
                 <path d="M19.3184 6.01751L10.4517 0.105976C10.3477 0.0365379 10.2254 -0.000518799 10.1002 -0.000518799C9.97513 -0.000518799 9.85282 0.0365379 9.74874 0.105976L0.882076 6.01751C0.795245 6.07529 0.724029 6.15362 0.674752 6.24555C0.625475 6.33747 0.599663 6.44014 0.599609 6.54444V12.456C0.599609 12.6675 0.706009 12.8651 0.882076 12.9829L9.74874 18.8944C9.85269 18.9636 9.97476 19.0005 10.0996 19.0005C10.2245 19.0005 10.3465 18.9636 10.4505 18.8944L19.3171 12.9829C19.404 12.9251 19.4752 12.8468 19.5245 12.7549C19.5737 12.6629 19.5996 12.5603 19.5996 12.456V6.54444C19.5996 6.44014 19.5737 6.33747 19.5245 6.24555C19.4752 6.15362 19.404 6.07529 19.3171 6.01751H19.3184ZM10.1009 11.6934L6.80881 9.49958L10.1009 7.30571L13.3929 9.49958L10.1009 11.6934ZM10.7342 6.20498V1.81598L17.8263 6.54318L14.5342 8.73704L10.7342 6.20371V6.20498ZM9.46754 6.20498L5.66754 8.73831L2.37548 6.54444L9.46754 1.81724V6.20498ZM4.52628 9.49958L1.86754 11.2716V7.72751L4.52628 9.49958ZM5.66754 10.2608L9.46754 12.7942V17.1832L2.37548 12.456L5.66754 10.2608ZM10.7342 12.7942L14.5342 10.2608L17.8263 12.4547L10.7342 17.1819V12.7942ZM15.6755 9.49958L18.3342 7.72751V11.2716L15.6755 9.49958Z"/>
               </svg>
             </a>
             <a href="https://linkedin.com" className="flex-1 flex items-center justify-center relative overflow-hidden group">
-              <div className="absolute inset-0 bg-primary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></div>
-              <span className="text-[16px] md:text-[20px] font-bold relative z-10 text-primary group-hover:text-secondary transition-colors duration-300">in</span>
+              <div className="absolute inset-0 bg-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></div>
+              <span className="text-[16px] md:text-[20px] font-bold relative z-10 text-secondary group-hover:text-primary transition-colors duration-300">in</span>
             </a>
           </div>
         </div>
 
         {/* Availability Text - 3 columns */}
-        <aside ref={availabilityRef} className="col-span-3 border-r border-primary">
+        <aside ref={availabilityRef} className="col-span-3 border-r border-secondary">
           <div className="h-full flex flex-col">
-            <div className="flex-1 border-b border-primary hidden md:flex items-center justify-center px-4">
+            <div className="flex-1 border-b border-secondary hidden md:flex items-center justify-center px-4">
               <div className="text-xs font-semibold">Coding globally from France.</div>
             </div>
             <div className="flex-1 flex items-center justify-center px-4">
@@ -181,7 +181,7 @@ export default function Header() {
               alt="QR Code"
               width={40}
               height={40}
-              className="w-8 h-8 md:w-10 md:h-10 object-contain border border-primary"
+              className="w-8 h-8 md:w-10 md:h-10 object-contain border border-secondary"
               priority
             />
           </a>

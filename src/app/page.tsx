@@ -1,116 +1,69 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@/components/Header';
-import Hero from '@/components/Hero';
-import Waves from '@/components/Waves';
-import DomeGallery from '@/components/DomeGallery';
-import Cubes from '@/components/Cubes';
 import OrizonBanner from '@/components/OrizonBanner';
 
-
-// Register GSAP plugins
+// Register GSAP plugins ONCE outside component
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+  const hasAnimated = useRef(false);
+
   useEffect(() => {
-    // Smooth scrolling setup
-    gsap.registerPlugin(ScrollTrigger);
-    
-    // Initialize smooth scroll behavior
+    // Prevent animation from running multiple times
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
+
+    // Configure GSAP once
     gsap.config({
       force3D: true,
       nullTargetWarn: false
     });
 
-    // Page load animations
-    const tl = gsap.timeline();
-    
-    // Set initial states
-    gsap.set('.page-section', {
-      opacity: 0,
-      y: 50
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      const sections = gsap.utils.toArray('.page-section');
+      
+      // Only animate if sections exist
+      if (sections.length === 0) return;
+
+      // Simpler, faster animation
+      gsap.fromTo(sections, 
+        {
+          opacity: 0,
+          y: 30
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: "power2.out",
+          clearProps: "all" // Remove inline styles after animation
+        }
+      );
     });
 
-    // Animate sections in order
-    tl.to('.header-section', {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: "power2.out"
-    })
-    .to('.cubes-section', {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: "power2.out"
-    }, "-=0.4")
-    .to('.banner-section', {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: "power2.out"
-    }, "-=0.4")
-    .to('.gallery-section', {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: "power2.out"
-    }, "-=0.4");
-
-    // Cleanup on unmount
+    // Cleanup
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
   }, []);
 
   return (
-    <div className="min-h-screen bg-primary p-4">
-      {/* Website Container with Primary Color Border Frame */}
-      <div className="relative min-h-screen bg-secondary border-4 border-primary rounded-lg overflow-hidden" style={{ position: 'relative' }}>
+    <div className="h-screen bg-secondary p-0 overflow-auto">
+      <div className="relative min-h-screen bg-primary border-4 border-orizon-secondary rounded-lg overflow-hidden m-4">
      
-        <div className="header-section page-section">
+        <div className="page-section">
           <Header />
         </div>
         
-        <section className="cubes-section page-section relative w-full h-64 overflow-hidden border-b-2 border-primary pt-2" style={{ position: 'relative', zIndex: 1 }}>
-          <Cubes 
-     gridSize={30}
-     cubeSize={20}
-     maxAngle={180}
-     radius={2}
-     borderStyle="2px dashed #272860"
-     faceColor="#f8e800"
-     rippleColor="#272860"
-     rippleSpeed={1.5}
-     autoAnimate={true}
-     rippleOnClick={true}
-          />
-        </section>
-        
-        <div className="banner-section page-section">
+        <div className="page-section">
           <OrizonBanner />
         </div>
-
-        <section className="gallery-section page-section relative h-[150vh] bg-secondary">
-          <DomeGallery
-            dragSensitivity={10}
-            enlargeTransitionMs={200}
-            fit={0.7}
-            minRadius={800}
-            maxVerticalRotationDeg={8}
-            segments={40}
-            openedImageBorderRadius="25px"
-            openedImageWidth="500px"
-            openedImageHeight="500px"
-            overlayBlurColor="#f8e800"
-          />
-        </section>
-
- {/* Animated Header */}
-
 
       </div>
     </div>

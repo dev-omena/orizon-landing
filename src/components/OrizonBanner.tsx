@@ -1,139 +1,110 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import { useEffect, useRef, useState } from 'react';
 
 interface OrizonBannerProps {
   className?: string;
 }
 
 export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
-  const bannerRef = useRef<HTMLDivElement>(null);
+  const [animatingIndex, setAnimatingIndex] = useState<number | null>(null);
+  const [direction, setDirection] = useState<'left' | 'right' | 'up' | 'down'>('right');
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    if (!bannerRef.current || !titleRef.current) return;
+    const chars = titleRef.current?.querySelectorAll('.char');
+    if (!chars) return;
 
-    const ctx = gsap.context(() => {
-      // Get all character elements
-      const chars = titleRef.current?.querySelectorAll('.char');
+    const animateRandomChar = () => {
+      const allChars = Array.from(chars);
+      const randomIndex = Math.floor(Math.random() * allChars.length);
+      const selectedChar = allChars[randomIndex] as HTMLElement;
       
-      if (chars) {
-        // Set initial state - show all characters normally
-        gsap.set(chars, {
-          opacity: 1,
-          y: 0,
-          x: 0,
-          rotation: 0,
-          scale: 1
-        });
-
-        // Function to animate one random letter with opposite direction
-        const animateRandomLetter = () => {
-          // Get all characters
-          const allChars = Array.from(chars);
-          
-          // Select only 1 random letter
-          const selectedChar = allChars[Math.floor(Math.random() * allChars.length)];
-          
-          // Check for directional classes
-          const hasToLeft = selectedChar.classList.contains('to-left');
-          const hasToRight = selectedChar.classList.contains('to-right');
-          const hasToUp = selectedChar.classList.contains('to-up');
-          const hasToDown = selectedChar.classList.contains('to-down');
-          
-          // Set initial position based on class (opposite direction)
-          if (hasToLeft) {
-            gsap.set(selectedChar, {
-              x: 120, // Opposite of left (right)
-              y: 0,
-              opacity: 0
-            });
-          } else if (hasToRight) {
-            gsap.set(selectedChar, {
-              x: -120, // Opposite of right (left)
-              y: 0,
-              opacity: 0
-            });
-          } else if (hasToUp) {
-            gsap.set(selectedChar, {
-              x: 0,
-              y: 120, // Opposite of up (down)
-              opacity: 0
-            });
-          } else if (hasToDown) {
-            gsap.set(selectedChar, {
-              x: 0,
-              y: -120, // Opposite of down (up)
-              opacity: 0
-            });
-          } else {
-            // Default animation for characters without direction classes
-            const directions = ['top', 'right', 'left'];
-            const direction = directions[Math.floor(Math.random() * directions.length)];
-            
-            if (direction === 'top') {
-              gsap.set(selectedChar, {
-                y: 120, // Opposite direction
-                x: 0,
-                opacity: 0
-              });
-            } else if (direction === 'right') {
-              gsap.set(selectedChar, {
-                y: 0,
-                x: -120, // Opposite direction
-                opacity: 0
-              });
-            } else {
-              gsap.set(selectedChar, {
-                y: 0,
-                x: 120, // Opposite direction
-                opacity: 0
-              });
-            }
-          }
-
-          // Animate to final position
-          gsap.to(selectedChar, {
-            x: 0,
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power2.out"
-          });
-        };
-
-        // Initial animation after component loads
-        setTimeout(animateRandomLetter, 1000);
-
-        // Set up interval for continuous animation
-        const interval = setInterval(animateRandomLetter, 3000);
-
-        // Cleanup interval on unmount
-        return () => {
-          clearInterval(interval);
-        };
+      // Check for directional classes
+      const hasToLeft = selectedChar.classList.contains('to-left');
+      const hasToRight = selectedChar.classList.contains('to-right');
+      const hasToTop = selectedChar.classList.contains('to-top');
+      const hasToBottom = selectedChar.classList.contains('to-bottom');
+      
+      // Determine direction
+      let animDirection: 'left' | 'right' | 'up' | 'down';
+      if (hasToLeft) animDirection = 'left';
+      else if (hasToRight) animDirection = 'right';
+      else if (hasToTop) animDirection = 'up';
+      else if (hasToBottom) animDirection = 'down';
+      else {
+        const directions: ('left' | 'right' | 'up' | 'down')[] = ['left', 'right', 'up', 'down'];
+        animDirection = directions[Math.floor(Math.random() * directions.length)];
       }
 
-    }, bannerRef);
+      setDirection(animDirection);
+      setAnimatingIndex(randomIndex);
 
-    return () => ctx.revert();
+      // Don't reset - keep the new character in place
+      setTimeout(() => {
+        setAnimatingIndex(null);
+      }, 1100);
+    };
+
+    // Initial animation
+    const initialTimeout = setTimeout(animateRandomChar, 1200);
+
+    // Set up continuous animation
+    const getRandomInterval = () => 2500 + Math.random() * 1500;
+    let intervalId: NodeJS.Timeout;
+    
+    const scheduleNext = () => {
+      intervalId = setTimeout(() => {
+        animateRandomChar();
+        scheduleNext();
+      }, getRandomInterval());
+    };
+    
+    scheduleNext();
+
+    return () => {
+      clearTimeout(initialTimeout);
+      clearTimeout(intervalId);
+    };
   }, []);
 
-  // Split text into individual characters with specific classes
-  const renderAnimatedText = (text: string) => {
+  const renderAnimatedText = (text: string, startIndex: number) => {
     return text.split('').map((letter, index) => {
-      // Add directional classes like the reference
-      const directionClasses = ['', 'to-left', 'to-right', 'to-up', 'to-down'];
+      const globalIndex = startIndex + index;
+      const directionClasses = ['', 'to-left', 'to-right', 'to-top', 'to-bottom'];
       const randomDirection = directionClasses[Math.floor(Math.random() * directionClasses.length)];
+      const isAnimating = animatingIndex === globalIndex;
       
+      // Calculate push distance based on direction
+      const getOriginalTransform = () => {
+        if (!isAnimating) return 'translate(0, 0)';
+        
+        switch (direction) {
+          case 'left': return 'translate(-100%, 0)';
+          case 'right': return 'translate(100%, 0)';
+          case 'up': return 'translate(0, -100%)';
+          case 'down': return 'translate(0, 100%)';
+          default: return 'translate(0, 0)';
+        }
+      };
+
+      const getDuplicateInitialTransform = () => {
+        switch (direction) {
+          case 'left': return 'translate(100%, 0)';
+          case 'right': return 'translate(-100%, 0)';
+          case 'up': return 'translate(0, 100%)';
+          case 'down': return 'translate(0, -100%)';
+        }
+      };
+
       return (
         <div 
-          key={index}
+          key={globalIndex}
           className={`char char--${letter.toLowerCase()} ${randomDirection}`}
           style={{ 
             position: 'relative', 
-            display: 'inline-block' 
+            display: 'inline-block',
+            overflow: 'hidden',
           }}
         >
           <span 
@@ -141,43 +112,129 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
             data-letter={letter}
             style={{
               position: 'relative',
-              display: 'inline-block'
+              display: 'inline-block',
+               transform: getOriginalTransform(),
+               transition: isAnimating ? 'transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)' : 'none',
             }}
           >
             {letter}
           </span>
+          {isAnimating && (
+            <span 
+              className="char__inner"
+              data-letter={letter}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                display: 'inline-block',
+                ['--push-from' as any]: getDuplicateInitialTransform(),
+                 animation: 'pushIn 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards',
+              }}
+            >
+              {letter}
+            </span>
+          )}
         </div>
       );
     });
   };
 
   return (
-    <div 
-      ref={bannerRef}
-      className={`relative w-full bg-orizon-secondary border-b border-primary py-4 md:py-2 lg:py-4 ${className}`}
-    >
-      <div className="flex items-center justify-center">
-        <div className="flex items-center justify-center w-full">
-          <h1 
-            ref={titleRef}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[10rem] font-black text-orizon-primary uppercase tracking-[0.05em] font-montserrat leading-none whitespace-nowrap"
-            style={{ fontWeight: 900, letterSpacing: '0em', textShadow: '2px 2px 0px rgba(0,0,0,0.3)' }}
-          >
-            <span className="word" style={{ position: 'relative', display: 'inline-block' }}>
-              {renderAnimatedText('ORIZON')}
+    <>
+      <style>{`
+        @keyframes pushIn {
+          from {
+            transform: var(--push-from);
+          }
+          to {
+            transform: translate(0, 0);
+          }
+        }
+        
+         .s__title {
+           --color-primary: #f40c3f;
+           --color-secondary: #160000;
+           --font-family-bigger: system-ui, -apple-system, sans-serif;
+           
+           flex-grow: 0;
+           flex-shrink: 0;
+           display: flex;
+           flex-direction: row;
+           align-items: center;
+           margin: 0;
+           cursor: default;
+           font: 700 2.2rem / 0.8 var(--font-family-bigger);
+           text-transform: uppercase;
+           padding: 0.5rem;
+           flex-wrap: nowrap;
+           justify-content: center;
+           white-space: nowrap;
+           overflow: hidden;
+         }
+         
+         @media (min-width: 480px) {
+           .s__title {
+             font-size: 3rem;
+           }
+         }
+         
+         @media (min-width: 640px) {
+           .s__title {
+             font-size: 4.2rem;
+           }
+         }
+         
+         @media (min-width: 768px) {
+           .s__title {
+             font-size: 5.5rem;
+           }
+         }
+         
+         @media (min-width: 1024px) {
+           .s__title {
+             font-size: 7rem;
+           }
+         }
+         
+         @media (min-width: 1280px) {
+           .s__title {
+             font-size: 8.5rem;
+           }
+         }
+         
+         @media (min-width: 1536px) {
+           .s__title {
+             font-size: 10rem;
+           }
+         }
+      `}</style>
+       <div 
+         className={`relative w-full bg-orizon-primary border-b border-orizon-secondary py-2 md:py-4 ${className}`}
+       >
+         <div className="flex items-center justify-center overflow-hidden">
+           <h1 
+             ref={titleRef}
+             className="s__title text-orizon-secondary"
+           >
+            <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
+              <div style={{ position: 'relative', display: 'inline-block' }} className="word">
+                {renderAnimatedText('ORIZON', 0)}
+              </div>
             </span>
-            <svg 
-              className="s__title__asset js-star mx-4 text-orizon-primary" 
+             <svg 
+               className="s__title__asset js-star text-orizon-secondary"
               width="48" 
               height="48" 
               viewBox="0 0 49 49"
               style={{ 
-                translate: 'none', 
-                rotate: 'none', 
-                scale: 'none', 
-                transform: 'translate(0px, 0px)',
                 display: 'inline-block',
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                translate: 'none',
+                rotate: 'none',
+                scale: 'none',
+                transform: 'translate(0px, 0px)',
+                margin: '0 1rem'
               }} 
             >
               <path 
@@ -185,12 +242,14 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
                 d="m24.5 0 3.3 21.2L49 24.5l-21.2 3.3L24.5 49l-3.3-21.2L0 24.5l21.2-3.3L24.5 0z"
               />
             </svg>
-            <span className="word" style={{ position: 'relative', display: 'inline-block' }}>
-              {renderAnimatedText('STUDIOS')}
+            <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
+              <div style={{ position: 'relative', display: 'inline-block' }} className="word">
+                {renderAnimatedText('STUDIOS', 7)}
+              </div>
             </span>
           </h1>
         </div>
       </div>
-    </div>
+    </>
   );
 }
