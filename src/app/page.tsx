@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@/components/Header';
 import OrizonBanner from '@/components/OrizonBanner';
+import Waves from '@/components/Waves';
 
 // Register GSAP plugins ONCE outside component
 gsap.registerPlugin(ScrollTrigger);
@@ -59,6 +60,22 @@ export default function Home() {
      
         <div className="page-section">
           <Header />
+        </div>
+        
+        <div className="page-section bg-primary border-t border-b border-orizon-secondary h-64">
+          <Waves
+            lineColor="#f8e800"
+            backgroundColor="#272860"
+            waveSpeedX={0.02}
+            waveSpeedY={0.01}
+            waveAmpX={40}
+            waveAmpY={20}
+            friction={0.8}
+            tension={0.01}
+            maxCursorMove={120}
+            xGap={10}
+            yGap={36}
+          />
         </div>
         
         <div className="page-section">
