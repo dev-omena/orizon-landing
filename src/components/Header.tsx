@@ -54,10 +54,10 @@ export default function Header() {
   return (
     <header 
       ref={headerRef}
-      className="site-head bg-primary text-secondary font-montserrat w-full"
+      className="site-head bg-primary text-secondary font-montserrat w-full m-0 p-0"
     >
       {/* Header Grid Layout - 16 Column Grid */}
-      <div className="grid grid-cols-16 w-full h-16 md:h-24 border-b border-secondary">
+      <div className="grid grid-cols-16 w-full h-16 md:h-24 border-b border-secondary m-0 p-0">
         
         {/* Logo Section - 2 columns */}
         <div ref={logoRef} className="col-span-2 flex items-center justify-center border-r border-secondary px-2 md:px-4">
