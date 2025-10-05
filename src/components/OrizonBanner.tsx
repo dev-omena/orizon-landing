@@ -7,55 +7,69 @@ interface OrizonBannerProps {
 }
 
 export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
-  const [animatingIndex, setAnimatingIndex] = useState<number | null>(null);
-  const [direction, setDirection] = useState<'left' | 'right' | 'up' | 'down'>('right');
+  const [animatingIndices, setAnimatingIndices] = useState<number[]>([]);
+  const [directions, setDirections] = useState<{[key: number]: 'left' | 'right' | 'up' | 'down'}>({});
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const chars = titleRef.current?.querySelectorAll('.char');
     if (!chars) return;
 
-    const animateRandomChar = () => {
+    const animateTwoChars = () => {
       const allChars = Array.from(chars);
-      const randomIndex = Math.floor(Math.random() * allChars.length);
-      const selectedChar = allChars[randomIndex] as HTMLElement;
+      const firstIndex = Math.floor(Math.random() * allChars.length);
+      let secondIndex;
       
-      // Check for directional classes
-      const hasToLeft = selectedChar.classList.contains('to-left');
-      const hasToRight = selectedChar.classList.contains('to-right');
-      const hasToTop = selectedChar.classList.contains('to-top');
-      const hasToBottom = selectedChar.classList.contains('to-bottom');
-      
-      // Determine direction
-      let animDirection: 'left' | 'right' | 'up' | 'down';
-      if (hasToLeft) animDirection = 'left';
-      else if (hasToRight) animDirection = 'right';
-      else if (hasToTop) animDirection = 'up';
-      else if (hasToBottom) animDirection = 'down';
-      else {
-        const directions: ('left' | 'right' | 'up' | 'down')[] = ['left', 'right', 'up', 'down'];
-        animDirection = directions[Math.floor(Math.random() * directions.length)];
-      }
+      // Ensure second character is different from first
+      do {
+        secondIndex = Math.floor(Math.random() * allChars.length);
+      } while (secondIndex === firstIndex);
 
-      setDirection(animDirection);
-      setAnimatingIndex(randomIndex);
+      // Get directions for both characters
+      const getDirection = (charIndex: number): 'left' | 'right' | 'up' | 'down' => {
+        const selectedChar = allChars[charIndex] as HTMLElement;
+        const hasToLeft = selectedChar.classList.contains('to-left');
+        const hasToRight = selectedChar.classList.contains('to-right');
+        const hasToTop = selectedChar.classList.contains('to-top');
+        const hasToBottom = selectedChar.classList.contains('to-bottom');
+        
+        if (hasToLeft) return 'left';
+        else if (hasToRight) return 'right';
+        else if (hasToTop) return 'up';
+        else if (hasToBottom) return 'down';
+        else {
+          const directions: ('left' | 'right' | 'up' | 'down')[] = ['left', 'right', 'up', 'down'];
+          return directions[Math.floor(Math.random() * directions.length)];
+        }
+      };
 
-      // Don't reset - keep the new character in place
+      const firstDirection = getDirection(firstIndex);
+      const secondDirection = getDirection(secondIndex);
+
+      // Set both characters animating at the same time
+      setAnimatingIndices([firstIndex, secondIndex]);
+      setDirections({
+        [firstIndex]: firstDirection,
+        [secondIndex]: secondDirection
+      });
+
+      // Reset after animation completes
       setTimeout(() => {
-        setAnimatingIndex(null);
-      }, 1100);
+        setAnimatingIndices([]);
+        setDirections({});
+      }, 1500);
     };
 
-    // Initial animation
-    const initialTimeout = setTimeout(animateRandomChar, 1200);
+    // Initial animation - start with two characters
+    const initialTimeout = setTimeout(animateTwoChars, 1200);
 
-    // Set up continuous animation
-    const getRandomInterval = () => 2500 + Math.random() * 1500;
+    // Set up continuous animation with two characters
+    const getRandomInterval = () => 3000 + Math.random() * 2000; // Slightly longer interval for two chars
     let intervalId: NodeJS.Timeout;
     
     const scheduleNext = () => {
       intervalId = setTimeout(() => {
-        animateRandomChar();
+        animateTwoChars();
         scheduleNext();
       }, getRandomInterval());
     };
@@ -73,13 +87,14 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
       const globalIndex = startIndex + index;
       const directionClasses = ['', 'to-left', 'to-right', 'to-top', 'to-bottom'];
       const randomDirection = directionClasses[Math.floor(Math.random() * directionClasses.length)];
-      const isAnimating = animatingIndex === globalIndex;
+      const isAnimating = animatingIndices.includes(globalIndex);
+      const charDirection = directions[globalIndex] || 'right';
       
       // Calculate push distance based on direction
       const getOriginalTransform = () => {
         if (!isAnimating) return 'translate(0, 0)';
         
-        switch (direction) {
+        switch (charDirection) {
           case 'left': return 'translate(-100%, 0)';
           case 'right': return 'translate(100%, 0)';
           case 'up': return 'translate(0, -100%)';
@@ -89,7 +104,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
       };
 
       const getDuplicateInitialTransform = () => {
-        switch (direction) {
+        switch (charDirection) {
           case 'left': return 'translate(100%, 0)';
           case 'right': return 'translate(-100%, 0)';
           case 'up': return 'translate(0, 100%)';

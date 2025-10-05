@@ -1,11 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { TextPlugin } from 'gsap/TextPlugin';
-
-// Register GSAP plugins
-gsap.registerPlugin(TextPlugin);
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -14,91 +9,7 @@ export default function Hero() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Initial setup
-      gsap.set([titleRef.current, subtitleRef.current, ctaRef.current], {
-        opacity: 0,
-        y: 60
-      });
-
-      // Background animation
-      gsap.set(backgroundRef.current, {
-        scale: 1.1,
-        opacity: 0
-      });
-
-      // Create main timeline
-      const tl = gsap.timeline({ delay: 1 });
-
-      // Background entrance
-      tl.to(backgroundRef.current, {
-        scale: 1,
-        opacity: 1,
-        duration: 2,
-        ease: "power2.out"
-      })
-
-      // Title animation with split text effect
-      .to(titleRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        ease: "power3.out"
-      }, "-=1.5")
-
-      // Subtitle animation
-      .to(subtitleRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power2.out"
-      }, "-=0.8")
-
-      // CTA buttons animation
-      .to(ctaRef.current?.children || [], {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "back.out(1.7)"
-      }, "-=0.5");
-
-      // Floating animation for the entire hero
-      gsap.to(heroRef.current, {
-        y: -10,
-        duration: 3,
-        ease: "power1.inOut",
-        yoyo: true,
-        repeat: -1
-      });
-
-      // Parallax effect on scroll
-      const handleScroll = () => {
-        const scrollY = window.scrollY;
-        const speed = 0.5;
-        
-        gsap.to(heroRef.current, {
-          y: scrollY * speed,
-          duration: 0.3,
-          ease: "none"
-        });
-        
-        gsap.to(backgroundRef.current, {
-          y: scrollY * 0.3,
-          scale: 1 + scrollY * 0.0005,
-          duration: 0.3,
-          ease: "none"
-        });
-      };
-
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
+  // Removed GSAP animations for better performance
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">

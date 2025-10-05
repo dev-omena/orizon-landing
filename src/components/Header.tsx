@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
 import Image from 'next/image';
 
 export default function Header() {
@@ -24,48 +23,7 @@ export default function Header() {
     'Loading creativity…\n please wait'
   ];
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Initial setup - hide elements
-      gsap.set([logoRef.current, consoleRef.current, navRef.current, socialsRef.current, availabilityRef.current, qrRef.current], {
-        opacity: 0,
-        y: -20
-      });
-
-      // Create timeline for header entrance
-      const tl = gsap.timeline({ delay: 0.5 });
-
-      // Animate elements in sequence
-      tl.to(logoRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out"
-      })
-      .to(consoleRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power2.out"
-      }, "-=0.4")
-      .to(navRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power2.out"
-      }, "-=0.3")
-      .to([socialsRef.current, availabilityRef.current, qrRef.current], {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power2.out"
-      }, "-=0.3");
-
-    }, headerRef);
-
-    return () => ctx.revert();
-  }, []);
+  // Removed GSAP animations for better performance
 
   // Console text animation
   useEffect(() => {

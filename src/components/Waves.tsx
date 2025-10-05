@@ -295,33 +295,50 @@ const Waves: React.FC<WavesProps> = ({
       const ctx = ctxRef.current;
       if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
-      ctx.beginPath();
+      
+      // Optimized drawing for performance
+      ctx.lineWidth = 1.2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.strokeStyle = configRef.current.lineColor;
-      linesRef.current.forEach(points => {
+      
+      // Reduced shadow for better performance
+      ctx.shadowColor = configRef.current.lineColor;
+      ctx.shadowBlur = 1;
+      
+      linesRef.current.forEach((points, lineIndex) => {
+        ctx.beginPath();
+        
         let p1 = moved(points[0], false);
         ctx.moveTo(p1.x, p1.y);
+        
         points.forEach((p, idx) => {
           const isLast = idx === points.length - 1;
           p1 = moved(p, !isLast);
-          const p2 = moved(points[idx + 1] || points[points.length - 1], !isLast);
           ctx.lineTo(p1.x, p1.y);
-          if (isLast) ctx.moveTo(p2.x, p2.y);
+          if (isLast) ctx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
         });
+        
+        ctx.stroke();
       });
-      ctx.stroke();
+      
+      // Reset shadow
+      ctx.shadowBlur = 0;
     }
 
     function tick(t: number) {
       if (!container) return;
       const mouse = mouseRef.current;
-      mouse.sx += (mouse.x - mouse.sx) * 0.1;
-      mouse.sy += (mouse.y - mouse.sy) * 0.1;
+      // Faster mouse smoothing for more responsive feel
+      mouse.sx += (mouse.x - mouse.sx) * 0.2;
+      mouse.sy += (mouse.y - mouse.sy) * 0.2;
       const dx = mouse.x - mouse.lx,
         dy = mouse.y - mouse.ly;
       const d = Math.hypot(dx, dy);
       mouse.v = d;
-      mouse.vs += (d - mouse.vs) * 0.1;
-      mouse.vs = Math.min(100, mouse.vs);
+      // Faster velocity response
+      mouse.vs += (d - mouse.vs) * 0.2;
+      mouse.vs = Math.min(80, mouse.vs);
       mouse.lx = mouse.x;
       mouse.ly = mouse.y;
       mouse.a = Math.atan2(dy, dx);
@@ -385,13 +402,22 @@ const Waves: React.FC<WavesProps> = ({
       className={`relative w-full h-full overflow-hidden ${className}`}
     >
       <div
-        className="absolute top-0 left-0 bg-orizon-secondary rounded-full w-[0.5rem] h-[0.5rem]"
+        className="absolute top-0 left-0 bg-orizon-secondary rounded-full w-[0.5rem] h-[0.5rem] opacity-80 shadow-lg"
         style={{
           transform: 'translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0)',
+          willChange: 'transform',
+          boxShadow: '0 0 20px rgba(248, 232, 0, 0.8)',
+          transition: 'opacity 0.3s ease'
+        }}
+      />
+      <canvas 
+        ref={canvasRef} 
+        className="block w-full h-full" 
+        style={{
+          filter: 'drop-shadow(0 0 8px rgba(248, 232, 0, 0.4))',
           willChange: 'transform'
         }}
       />
-      <canvas ref={canvasRef} className="block w-full h-full" />
     </div>
   );
 };
