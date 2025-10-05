@@ -8,7 +8,7 @@ import LockedScrollServices from '@/components/LockedScrollServices';
 export default function Home() {
 
   return (
-    <div className="h-screen bg-secondary p-0 overflow-auto">
+    <div className="min-h-screen bg-secondary p-0">
       <div className="relative min-h-screen bg-primary border-4 border-orizon-secondary rounded-lg overflow-hidden m-4">
      
         <div>
