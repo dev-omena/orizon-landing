@@ -1,52 +1,122 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import OrizonBanner from '@/components/OrizonBanner';
 import Waves from '@/components/Waves';
-import LockedScrollServices from '@/components/LockedScrollServices';
+import OrizonHero from '@/components/OrizonHero';
+import ScrollStackServices from '@/components/scroll-stack';
+import CtaSection from '@/components/CtaSection';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showSections, setShowSections] = useState(false);
+
+  useEffect(() => {
+    // Simulate loading time - longer to enjoy animations
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      // Start section animations after loading screen
+      setTimeout(() => {
+        setShowSections(true);
+      }, 300);
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-secondary p-0">
       <div className="relative min-h-screen bg-primary border border-orizon-secondary rounded-lg overflow-hidden m-2">
      
-        {/* Header + Waves + Banner - Full Screen Height */}
-        <div className="h-screen flex flex-col">
-          {/* Header Section - Fixed small height */}
-          <div className="h-16 md:h-20 flex-shrink-0">
-            <Header />
+        {/* Header with Reveal Animation */}
+        <div className={`transform transition-all duration-1000 ease-out ${
+          showSections 
+            ? 'translate-y-0 opacity-100' 
+            : '-translate-y-full opacity-0'
+        }`}>
+          <Header />
+        </div>
+
+        {/* Connected Hero Section - Header + Waves + Banner as one unit */}
+        <div className="h-screen flex flex-col bg-primary relative overflow-hidden">
+          {/* Waves Section with Reveal Animation */}
+          <div className={`flex-shrink-0 relative border-b border-orizon-secondary transform transition-all duration-1200 ease-out ${
+            showSections 
+              ? 'translate-x-0 opacity-100 scale-100' 
+              : '-translate-x-full opacity-0 scale-95'
+          }`} 
+          style={{ 
+            height: 'calc((100vh - 6rem) * 0.7)',
+            transitionDelay: showSections ? '200ms' : '0ms'
+          }}>
+            <Waves
+              lineColor="#f8e800"
+              backgroundColor="#272860"
+              waveSpeedX={0.025}
+              waveSpeedY={0.012}
+              waveAmpX={50}
+              waveAmpY={25}
+              friction={0.92}
+              tension={0.025}
+              maxCursorMove={100}
+              xGap={15}
+              yGap={45}
+              style={{
+                filter: 'drop-shadow(0 0 12px rgba(248, 232, 0, 0.3))'
+              }}
+              className="waves-enhanced"
+            />
           </div>
-         
-          {/* Waves Section - Takes 60% of remaining height */}
-          <div className="bg-primary border-t border-b border-orizon-secondary -mt-px flex-shrink-0" style={{ height: 'calc((100vh - 4rem) * 0.7)' }}>
-              <Waves
-                lineColor="#f8e800"
-                backgroundColor="#272860"
-                waveSpeedX={0.025}
-                waveSpeedY={0.012}
-                waveAmpX={50}
-                waveAmpY={25}
-                friction={0.92}
-                tension={0.025}
-                maxCursorMove={100}
-                xGap={15}
-                yGap={45}
-                style={{
-                  filter: 'drop-shadow(0 0 12px rgba(248, 232, 0, 0.3))'
-                }}
-                className="waves-enhanced"
-              />
-          </div>
-         
-          {/* Banner Section - Takes remaining 40% */}
-          <div className="flex-1 min-h-0">
+          
+          {/* Banner Section with Reveal Animation */}
+          <div className={`flex-shrink-0 bg-primary transform transition-all duration-1000 ease-out ${
+            showSections 
+              ? 'translate-y-0 opacity-100' 
+              : 'translate-y-full opacity-0'
+          }`} 
+          style={{ 
+            height: 'calc((100vh - 6rem) * 0.3)',
+            transitionDelay: showSections ? '400ms' : '0ms'
+          }}>
             <OrizonBanner />
           </div>
         </div>
 
-        {/* ScrollStack Services Section - Below the fold */}
-        <LockedScrollServices />
+        {/* OrizonHero Section with Reveal Animation */}
+        <div className={`transform transition-all duration-1500 ease-out ${
+          showSections 
+            ? 'translate-y-0 opacity-100' 
+            : 'translate-y-16 opacity-0'
+        }`}
+        style={{
+          transitionDelay: showSections ? '600ms' : '0ms'
+        }}>
+          <OrizonHero />
+        </div>
+
+
+
+          <ScrollStackServices />
+
+
+
+        {/* CtaSection with Reveal Animation */}
+        <div className={`transform transition-all duration-1500 ease-out ${
+          showSections 
+            ? 'translate-y-0 opacity-100' 
+            : 'translate-y-16 opacity-0'
+        }`}
+        style={{
+          transitionDelay: showSections ? '1000ms' : '0ms'
+        }}>
+          <CtaSection />
+        </div>
       </div>
     </div>
   );

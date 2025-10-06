@@ -181,7 +181,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
            cursor: default;
            font: 700 2.2rem / 0.8 var(--font-family-bigger);
            text-transform: uppercase;
-           padding: 0.5rem;
+           padding: 0;
            flex-wrap: nowrap;
            justify-content: center;
            white-space: nowrap;
@@ -225,7 +225,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
          }
       `}</style>
        <div 
-         className={`relative w-full bg-orizon-primary border-b border-orizon-secondary py-2 md:py-4 ${className}`}
+         className={`relative w-full bg-orizon-primary border-b border-orizon-secondary h-full flex items-center justify-center ${className}`}
        >
          <div className="flex items-center justify-center overflow-hidden">
            <h1 
@@ -235,7 +235,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
             <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
               <div style={{ position: 'relative', display: 'inline-block' }} className="word">
                 {renderAnimatedText('ORIZON', 0)}
-              </div>
+              </div>  
             </span>
              <svg 
                className="s__title__asset js-star text-orizon-secondary"
