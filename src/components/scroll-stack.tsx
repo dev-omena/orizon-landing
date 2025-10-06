@@ -134,32 +134,32 @@ const ServiceCard = ({ service, index, isActive, isPast }: ServiceCardProps) => 
         pointerEvents: isActive ? 'auto' : 'none'
       }}
     >
-      <div className={`relative w-full max-w-6xl overflow-hidden rounded-[40px] ${service.bgColor} shadow-2xl border-2 border-orizon-secondary/40`}>
+      <div className={`relative w-full max-w-4xl overflow-hidden rounded-[30px] ${service.bgColor} shadow-2xl border-2 border-orizon-secondary/40`}>
         <GeometricPattern color="orizon" />
         
         <div className="relative p-4">
-          <div className="flex items-start justify-between mb-8">
-            <div className={`p-6 ${service.accentColor} rounded-2xl shadow-lg`}>
-              <Icon className="w-12 h-12 text-orizon-primary" strokeWidth={2.5} />
+          <div className="flex items-start justify-between mb-4">
+            <div className={`p-4 ${service.accentColor} rounded-xl shadow-lg`}>
+              <Icon className="w-8 h-8 text-orizon-primary" strokeWidth={2.5} />
             </div>
             <div className="text-right">
-              <div className="text-8xl font-black text-orizon-secondary/20" style={{ fontStyle: 'italic' }}>
+              <div className="text-6xl font-black text-orizon-secondary/20" style={{ fontStyle: 'italic' }}>
                 {String(index + 1).padStart(2, '0')}
               </div>
             </div>
           </div>
           
-          <h3 className="text-5xl font-black text-orizon-secondary mb-4 tracking-tighter leading-none uppercase" style={{ fontStyle: 'italic' }}>
+          <h3 className="text-4xl font-black text-orizon-secondary mb-3 tracking-tighter leading-none uppercase" style={{ fontStyle: 'italic' }}>
             {service.title}
           </h3>
           
-          <div className="h-2 w-32 bg-orizon-secondary mb-6" />
+          <div className="h-1 w-24 bg-orizon-secondary mb-4" />
           
-          <p className="text-lg font-bold text-orizon-secondary/90 leading-relaxed max-w-3xl tracking-tight">
+          <p className="text-base font-bold text-orizon-secondary/90 leading-relaxed max-w-2xl tracking-tight">
             {service.description}
           </p>
           
-          <div className="mt-8 flex items-center gap-4">
+          <div className="mt-6 flex items-center gap-4">
             <div className="h-3 w-3 bg-orizon-secondary rotate-45" />
             <div className="h-3 w-3 bg-orizon-secondary rotate-45" />
             <div className="h-3 w-3 bg-orizon-secondary rotate-45" />
