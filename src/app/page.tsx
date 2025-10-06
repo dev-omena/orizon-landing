@@ -100,11 +100,17 @@ export default function Home() {
           <OrizonHero />
         </div>
 
-
-
+        {/* Services Section with Reveal Animation */}
+        <div className={`transform transition-all duration-1500 ease-out ${
+          showSections 
+            ? 'translate-y-0 opacity-100' 
+            : 'translate-y-16 opacity-0'
+        }`}
+        style={{
+          transitionDelay: showSections ? '800ms' : '0ms'
+        }}>
           <ScrollStackServices />
-
-
+        </div>
 
         {/* CtaSection with Reveal Animation */}
         <div className={`transform transition-all duration-1500 ease-out ${

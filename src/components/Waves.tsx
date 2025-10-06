@@ -364,20 +364,38 @@ const Waves: React.FC<WavesProps> = ({
     function updateMouse(x: number, y: number) {
       const mouse = mouseRef.current;
       const b = boundingRef.current;
-      mouse.x = x - b.left;
-      mouse.y = y - b.top;
-      if (!mouse.set) {
-        mouse.sx = mouse.x;
-        mouse.sy = mouse.y;
-        mouse.lx = mouse.x;
-        mouse.ly = mouse.y;
-        mouse.set = true;
+      
+      // Ensure bounding rectangle is properly set
+      if (!b || (b.left === 0 && b.top === 0 && b.width === 0 && b.height === 0)) {
+        // Force recalculation of bounding rectangle
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          boundingRef.current = rect;
+        }
+      }
+      
+      const bounds = boundingRef.current;
+      if (bounds) {
+        mouse.x = x - bounds.left;
+        mouse.y = y - bounds.top;
+        if (!mouse.set) {
+          mouse.sx = mouse.x;
+          mouse.sy = mouse.y;
+          mouse.lx = mouse.x;
+          mouse.ly = mouse.y;
+          mouse.set = true;
+        }
       }
     }
 
     setSize();
     setLines();
-    frameIdRef.current = requestAnimationFrame(tick);
+    
+    // Small delay to ensure component is fully mounted
+    setTimeout(() => {
+      frameIdRef.current = requestAnimationFrame(tick);
+    }, 100);
+    
     window.addEventListener('resize', onResize);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('touchmove', onTouchMove, { passive: false });

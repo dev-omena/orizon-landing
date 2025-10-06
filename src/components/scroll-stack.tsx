@@ -27,31 +27,31 @@ const services = [
     title: "WEB DEVELOPMENT",
     description: "Crafting pixel-perfect, responsive websites with cutting-edge technologies and seamless user experiences.",
     icon: Code,
-    bgColor: "bg-orizon-primary",
-    accentColor: "bg-orizon-secondary"
+    bgColor: "bg-orizon-secondary",
+    accentColor: "bg-orizon-primary"
   },
   {
     id: 2,
     title: "UI/UX DESIGN",
     description: "Creating intuitive and visually stunning interfaces that users love to interact with every single day.",
     icon: Palette,
-    bgColor: "bg-orizon-primary",
-    accentColor: "bg-orizon-secondary"
+    bgColor: "bg-orizon-secondary",
+    accentColor: "bg-orizon-primary"
   },
   {
     id: 3,
     title: "BRAND STRATEGY",
     description: "Building powerful brand identities that resonate with your audience and stand out in the market.",
     icon: Sparkles,
-    bgColor: "bg-orizon-primary",
-    accentColor: "bg-orizon-secondary"
+    bgColor: "bg-orizon-secondary",
+    accentColor: "bg-orizon-primary"
   },
   {
     id: 4,
     title: "PERFORMANCE OPTIMIZATION",
     description: "Supercharging your digital presence with lightning-fast load times and smooth animations.",
     icon: Zap,
-    bgColor: "bg-orizon-primary",
+    bgColor: "bg-orizon-secondary",
     accentColor: "bg-orizon-secondary"
   },
   {
@@ -59,16 +59,16 @@ const services = [
     title: "DIGITAL MARKETING",
     description: "Amplifying your reach with data-driven strategies that convert visitors into loyal customers.",
     icon: Globe,
-    bgColor: "bg-orizon-primary",
-    accentColor: "bg-orizon-secondary"
+    bgColor: "bg-orizon-secondary",
+    accentColor: "bg-orizon-primary"
   },
   {
     id: 6,
     title: "PRODUCT LAUNCH",
     description: "Taking your product from concept to market with strategic planning and flawless execution.",
     icon: Rocket,
-    bgColor: "bg-orizon-primary",
-    accentColor: "bg-orizon-secondary"
+    bgColor: "bg-orizon-secondary",
+    accentColor: "bg-orizon-primary"
   }
 ];
 
@@ -140,37 +140,36 @@ const ServiceCard = ({ service, index, isActive, isPast }: ServiceCardProps) => 
         <div className="relative p-4">
           <div className="flex items-start justify-between mb-4">
             <div className={`p-4 ${service.accentColor} rounded-xl shadow-lg`}>
-              <Icon className="w-8 h-8 text-orizon-primary" strokeWidth={2.5} />
+              <Icon className="w-8 h-8 text-orizon-secondary" strokeWidth={2.5} />
             </div>
             <div className="text-right">
-              <div className="text-6xl font-black text-orizon-secondary/20" style={{ fontStyle: 'italic' }}>
+              <div className="text-6xl font-black text-orizon-primary/20" style={{ fontStyle: 'italic' }}>
                 {String(index + 1).padStart(2, '0')}
               </div>
             </div>
           </div>
           
-          <h3 className="text-4xl font-black text-orizon-secondary mb-3 tracking-tighter leading-none uppercase" style={{ fontStyle: 'italic' }}>
+          <h3 className="text-4xl font-black text-orizon-primary  mb-3 tracking-tighter leading-none uppercase" style={{ fontStyle: 'italic' }}>
             {service.title}
           </h3>
           
-          <div className="h-1 w-24 bg-orizon-secondary mb-4" />
+          <div className="h-1 w-24 bg-orizon-primary mb-4" />
           
-          <p className="text-base font-bold text-orizon-secondary/90 leading-relaxed max-w-2xl tracking-tight">
+          <p className="text-base font-bold text-orizon-primary/90 leading-relaxed max-w-2xl tracking-tight">
             {service.description}
           </p>
           
           <div className="mt-6 flex items-center gap-4">
-            <div className="h-3 w-3 bg-orizon-secondary rotate-45" />
-            <div className="h-3 w-3 bg-orizon-secondary rotate-45" />
-            <div className="h-3 w-3 bg-orizon-secondary rotate-45" />
+            <div className="h-3 w-3 bg-orizon-primary rotate-45" />
+            <div className="h-3 w-3 bg-orizon-primary rotate-45" />
           </div>
         </div>
 
         {/* Corner accent */}
-        <div className="absolute top-6 left-6 w-8 h-8 border-l-2 border-t-2 border-orizon-secondary/60 rounded-tl-lg"></div>
-        <div className="absolute top-6 right-6 w-8 h-8 border-r-2 border-t-2 border-orizon-secondary/60 rounded-tr-lg"></div>
-        <div className="absolute bottom-6 left-6 w-8 h-8 border-l-2 border-b-2 border-orizon-secondary/60 rounded-bl-lg"></div>
-        <div className="absolute bottom-6 right-6 w-8 h-8 border-r-2 border-b-2 border-orizon-secondary/60 rounded-br-lg"></div>
+        <div className="absolute top-6 left-6 w-8 h-8 border-l-2 border-t-2 border-orizon-primary/60 rounded-tl-lg"></div>
+        <div className="absolute top-6 right-6 w-8 h-8 border-r-2 border-t-2 border-orizon-primary/60 rounded-tr-lg"></div>
+        <div className="absolute bottom-6 left-6 w-8 h-8 border-l-2 border-b-2 border-orizon-primary/60 rounded-bl-lg"></div>
+        <div className="absolute bottom-6 right-6 w-8 h-8 border-r-2 border-b-2 border-orizon-primary/60 rounded-br-lg"></div>
       </div>
     </div>
   );
@@ -187,26 +186,21 @@ const ScrollStackServices = () => {
       const container = containerRef.current;
       const rect = container.getBoundingClientRect();
       
-      // Calculate scroll progress based on section visibility
+      // Get the scroll position relative to the section
       const sectionTop = rect.top;
       const sectionHeight = rect.height;
       const viewportHeight = window.innerHeight;
       
-      // When section is in view, calculate progress
-      if (sectionTop <= 0 && sectionTop + sectionHeight >= viewportHeight) {
-        const scrollProgress = Math.abs(sectionTop) / (sectionHeight - viewportHeight);
-        const newIndex = Math.min(
-          Math.floor(scrollProgress * services.length),
-          services.length - 1
-        );
-        setCurrentIndex(Math.max(0, newIndex));
-      } else if (sectionTop > 0) {
-        // Section not yet in view
-        setCurrentIndex(0);
-      } else {
-        // Section past view
-        setCurrentIndex(services.length - 1);
-      }
+      // Calculate how much of the section has been scrolled through
+      const scrollThroughSection = Math.max(0, Math.min(1, -sectionTop / sectionHeight));
+      
+      // Map scroll progress to card index
+      const newIndex = Math.min(
+        Math.floor(scrollThroughSection * services.length),
+        services.length - 1
+      );
+      
+      setCurrentIndex(Math.max(0, newIndex));
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -221,7 +215,7 @@ const ScrollStackServices = () => {
       <section 
         ref={containerRef}
         className="relative bg-orizon-primary"
-        style={{ height: `${services.length * 40}vh` }}
+        style={{ height: `${services.length * 20}vh` }}
       >
         <div className="sticky top-0 h-screen overflow-hidden bg-orizon-primary flex items-center justify-center">
           {services.map((service, idx) => (
@@ -239,11 +233,11 @@ const ScrollStackServices = () => {
             {services.map((_, index) => (
               <div
                 key={index}
-                className={`h-3 border-2 border-orizon-secondary transition-all duration-300 ${
+                className={`h-3 border-2 border-orizon-primary transition-all duration-300 ${
                   index === currentIndex 
-                    ? 'w-16 bg-orizon-secondary' 
+                    ? 'w-16 bg-orizon-primary' 
                     : index < currentIndex
-                    ? 'w-3 bg-orizon-secondary'
+                    ? 'w-3 bg-orizon-primary'
                     : 'w-3 bg-transparent'
                 }`}
               />
