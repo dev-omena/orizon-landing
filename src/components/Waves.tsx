@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, CSSProperties } from 'react';
+import React, { useRef, useEffect, CSSProperties, useState } from 'react';
 
 class Grad {
   x: number;
@@ -151,6 +151,7 @@ const Waves: React.FC<WavesProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const boundingRef = useRef<{
     width: number;
     height: number;
@@ -206,6 +207,7 @@ const Waves: React.FC<WavesProps> = ({
       yGap
     };
   }, [lineColor, waveSpeedX, waveSpeedY, waveAmpX, waveAmpY, friction, tension, maxCursorMove, xGap, yGap]);
+
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -363,19 +365,26 @@ const Waves: React.FC<WavesProps> = ({
     }
     function updateMouse(x: number, y: number) {
       const mouse = mouseRef.current;
-      const b = boundingRef.current;
       
-      // Ensure bounding rectangle is properly set
-      if (!b || (b.left === 0 && b.top === 0 && b.width === 0 && b.height === 0)) {
-        // Force recalculation of bounding rectangle
+      // Always recalculate bounding rectangle if not properly initialized
+      if (!isInitialized || (boundingRef.current.width === 0 || boundingRef.current.height === 0)) {
         if (container) {
           const rect = container.getBoundingClientRect();
-          boundingRef.current = rect;
+          // Only update if we have valid dimensions
+          if (rect.width > 0 && rect.height > 0) {
+            boundingRef.current = {
+              width: rect.width,
+              height: rect.height,
+              left: rect.left,
+              top: rect.top
+            };
+            setIsInitialized(true);
+          }
         }
       }
       
       const bounds = boundingRef.current;
-      if (bounds) {
+      if (bounds && bounds.width > 0 && bounds.height > 0) {
         mouse.x = x - bounds.left;
         mouse.y = y - bounds.top;
         if (!mouse.set) {
@@ -391,10 +400,8 @@ const Waves: React.FC<WavesProps> = ({
     setSize();
     setLines();
     
-    // Small delay to ensure component is fully mounted
-    setTimeout(() => {
-      frameIdRef.current = requestAnimationFrame(tick);
-    }, 100);
+    // Start animation immediately
+    frameIdRef.current = requestAnimationFrame(tick);
     
     window.addEventListener('resize', onResize);
     window.addEventListener('mousemove', onMouseMove);

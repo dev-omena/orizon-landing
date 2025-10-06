@@ -173,3 +173,38 @@ html {
   scrollbar-width: none;
 }
 
+/* Grid Ripple Animation - Distorts the grid pattern */
+@keyframes gridRipple {
+  0% {
+    background-size: 120px 120px, 120px 120px;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  25% {
+    background-size: 140px 140px, 100px 100px;
+    transform: scale(1.02);
+    filter: blur(0.5px);
+  }
+  50% {
+    background-size: 160px 160px, 80px 80px;
+    transform: scale(1.05);
+    filter: blur(1px);
+  }
+  75% {
+    background-size: 140px 140px, 100px 100px;
+    transform: scale(1.02);
+    filter: blur(0.5px);
+  }
+  100% {
+    background-size: 120px 120px, 120px 120px;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Grid distortion effect */
+.grid-distortion {
+  transform-origin: center center;
+  will-change: transform, filter, background-size;
+}
+
