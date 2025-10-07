@@ -215,7 +215,10 @@ const ScrollStackServices = () => {
       <section 
         ref={containerRef}
         className="relative bg-orizon-primary"
-        style={{ height: `${services.length * 20}vh` }}
+        style={{ 
+          height: `${services.length * 20}vh`,
+          borderBottom: '1px solid #f8e800'
+        }}
       >
         <div className="sticky top-0 h-screen overflow-hidden bg-orizon-primary flex items-center justify-center">
           {services.map((service, idx) => (

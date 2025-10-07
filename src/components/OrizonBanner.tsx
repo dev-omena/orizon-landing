@@ -225,7 +225,8 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
          }
       `}</style>
        <div 
-         className={`relative w-full bg-orizon-primary border-b border-orizon-secondary h-full flex items-center justify-center ${className}`}
+         className={`relative w-full bg-orizon-primary h-full flex items-center justify-center ${className}`}
+         style={{ borderBottom: '1px solid #f8e800' }}
        >
          <div className="flex items-center justify-center overflow-hidden">
            <h1 
@@ -234,7 +235,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
            >
             <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
               <div style={{ position: 'relative', display: 'inline-block' }} className="word">
-                {renderAnimatedText('ORIZON', 0)}
+                {renderAnimatedText('OMENA', 0)}
               </div>  
             </span>
              <svg 
@@ -259,7 +260,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
             </svg>
             <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
               <div style={{ position: 'relative', display: 'inline-block' }} className="word">
-                {renderAnimatedText('STUDIOS', 7)}
+                {renderAnimatedText('AGENCY', 6)}
               </div>
             </span>
           </h1>

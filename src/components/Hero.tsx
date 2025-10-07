@@ -12,7 +12,7 @@ export default function Hero() {
   // Removed GSAP animations for better performance
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24" style={{ borderBottom: '1px solid #f8e800' }}>
       {/* Animated Background */}
       <div 
         ref={backgroundRef}

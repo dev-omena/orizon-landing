@@ -3,7 +3,7 @@
 const OrizonHero = () => {
   return (
     <div className="bg-orizon-primary">
-       <div className="h-screen flex items-center justify-center bg-orizon-primary relative overflow-hidden">
+       <div className="h-screen flex items-center justify-center bg-orizon-primary relative overflow-hidden" style={{ borderBottom: '1px solid #f8e800' }}>
          {/* Grid squares background */}
          <div className="absolute inset-0" style={{
            backgroundImage: `
@@ -28,14 +28,16 @@ const OrizonHero = () => {
             <div className="w-12 h-20 bg-orizon-secondary rounded-2xl rotate-45" />
           </div>
           <h1 className="text-7xl md:text-9xl font-black text-orizon-secondary mb-2 tracking-tighter" style={{ fontStyle: 'italic' }}>
-            ORIZON
+            OMENA
           </h1>
           <h2 className="text-6xl md:text-8xl font-black text-orizon-secondary mb-2 tracking-tighter" style={{ fontStyle: 'italic' }}>
-            STUDIOS
+            AGENCY
           </h2>
-          <h3 className="text-7xl md:text-9xl font-black text-orizon-secondary tracking-tighter" style={{ fontStyle: 'italic' }}>
-            SINCE 2020
-          </h3>
+          <p className="text-xl md:text-2xl text-orizon-secondary/80 max-w-4xl mx-auto mb-8 leading-relaxed font-bold">
+            We are always striving for methods to generate phenomenal results.
+            <br />
+            We have our interest at the heart of everything we do, so we naturally become an extended arm of their business.
+          </p>
           <div className="mt-8 animate-bounce">
             <div className="text-5xl text-orizon-secondary">↓</div>
           </div>
