@@ -10,7 +10,7 @@ import CtaSection from '@/components/CtaSection';
 import Separator from '@/components/Separator';
 import Footer from '@/components/Footer';
 import LoadingScreen from '@/components/LoadingScreen';
-import WorkSection from '@/components/WorkSection';
+import WorkSectionWithPortal from '@/components/WorkSectionWithPortal';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -160,7 +160,9 @@ export default function Home() {
         }}>
           <Separator />
         </div>
-        <WorkSection />
+        
+
+          <WorkSectionWithPortal />
         {/* CtaSection with Reveal Animation */}
         <div className={`transform transition-all duration-1500 ease-out ${
           showSections 

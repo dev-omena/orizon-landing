@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const WorkSection = () => {
+const WorkSectionWithPortal = () => {
   // Use videos from public folder
   const cards = [
     { video: '/1.mp4', title: 'Eclipse Horizon', number: '739284' },
@@ -17,7 +17,7 @@ const WorkSection = () => {
     { video: '/7.mp4', title: 'Desert Tunnel', number: '682943' },
   ];
 
-  const workSectionRef = useRef(null);
+  const sectionRef = useRef(null);
   const textContainerRef = useRef(null);
   const cardsContainerRef = useRef(null);
   const gridCanvasRef = useRef(null);
@@ -25,14 +25,19 @@ const WorkSection = () => {
   const animationFrameRef = useRef(null);
   const letterPositionsRef = useRef(new Map());
   const currentXPositionRef = useRef(0);
+  const ovalRef = useRef(null);
+  const workTextRef = useRef(null);
+  const backgroundRef = useRef(null);
 
   useEffect(() => {
-    const workSection = workSectionRef.current;
+    const section = sectionRef.current;
     const cardsContainer = cardsContainerRef.current;
     const textContainer = textContainerRef.current;
+    const oval = ovalRef.current;
+    const workText = workTextRef.current;
 
-    const initialSectionRect = workSection.getBoundingClientRect();
-    const moveDistance = initialSectionRect.width * 5;
+    const initialSectionRect = section.getBoundingClientRect();
+    const moveDistance = initialSectionRect.width * 8; // Increased from 5 to 8 for more spread
 
     const lerp = (start, end, t) => start + (end - start) * t;
 
@@ -42,14 +47,11 @@ const WorkSection = () => {
 
     const resizeGridCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
-      // Get actual rendered dimensions of the work section
-      const workSection = workSectionRef.current;
-      const sectionRect = workSection.getBoundingClientRect();
+      const sectionRect = section.getBoundingClientRect();
       const actualWidth = sectionRect.width;
       const actualHeight = sectionRect.height;
       
-      // Make canvas cover the entire work section width plus extra for scrolling
-      const sectionWidth = actualWidth * 6; // 600vw equivalent
+      const sectionWidth = actualWidth * 6;
       gridCanvas.width = sectionWidth * dpr;
       gridCanvas.height = actualHeight * dpr;
       gridCanvas.style.width = `${sectionWidth}px`;
@@ -63,26 +65,22 @@ const WorkSection = () => {
       gridCtx.fillRect(0, 0, gridCanvas.width, gridCanvas.height);
       gridCtx.fillStyle = '#f8e800';
       
-      // Get actual rendered dimensions
-      const workSection = workSectionRef.current;
-      const sectionRect = workSection.getBoundingClientRect();
+      const sectionRect = section.getBoundingClientRect();
       const actualWidth = sectionRect.width;
       const actualHeight = sectionRect.height;
       
-      // Scale dot size and spacing based on actual dimensions
       const baseSpacing = 30;
-      const scaleFactor = Math.min(actualWidth / 1920, actualHeight / 1080, 1); // Scale based on a reference resolution
+      const scaleFactor = Math.min(actualWidth / 1920, actualHeight / 1080, 1);
       const spacing = baseSpacing * scaleFactor;
       const dotSize = Math.max(0.5, 1 * scaleFactor);
       
-      const sectionWidth = actualWidth * 6; // 600vw equivalent
+      const sectionWidth = actualWidth * 6;
       const [rows, cols] = [
         Math.ceil(actualHeight / spacing),
         Math.ceil(sectionWidth / spacing),
       ];
       const offset = (scrollProgress * spacing * 10) % spacing;
 
-      // Draw dots across the entire canvas width
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
           const xPos = x * spacing - offset;
@@ -94,8 +92,7 @@ const WorkSection = () => {
     };
 
     // Three.js Setup
-    const lettersScene = new THREE.Scene();
-    const cameraSectionRect = workSection.getBoundingClientRect();
+    const cameraSectionRect = section.getBoundingClientRect();
     const lettersCamera = new THREE.PerspectiveCamera(
       50,
       cameraSectionRect.width / cameraSectionRect.height,
@@ -109,17 +106,18 @@ const WorkSection = () => {
       antialias: true,
       alpha: true,
     });
-    const rendererSectionRect = workSection.getBoundingClientRect();
+    const rendererSectionRect = section.getBoundingClientRect();
     lettersRenderer.setSize(rendererSectionRect.width, rendererSectionRect.height);
     lettersRenderer.setClearColor(0x000000, 0);
     lettersRenderer.setPixelRatio(window.devicePixelRatio);
+
+    const lettersScene = new THREE.Scene();
 
     const createTextAnimationPath = (yPos, amplitude, startY) => {
       const points = [];
       for (let i = 0; i <= 20; i++) {
         const t = i / 20;
-        // Start all letters at center (x=0), then spread horizontally
-        const xProgress = Math.max(0, (t - 0.1) / 0.9); // Start spreading after 10% progress
+        const xProgress = Math.max(0, (t - 0.1) / 0.9);
         points.push(
           new THREE.Vector3(
             -25 + 50 * xProgress,
@@ -138,10 +136,10 @@ const WorkSection = () => {
     };
 
     const path = [
-      createTextAnimationPath(10, 2, 12),    // W
-      createTextAnimationPath(3.5, 1, 4),    // O
-      createTextAnimationPath(-3.5, -1, -4), // R
-      createTextAnimationPath(-10, -2, -12), // K
+      createTextAnimationPath(10, 2, 12),
+      createTextAnimationPath(3.5, 1, 4),
+      createTextAnimationPath(-3.5, -1, -4),
+      createTextAnimationPath(-10, -2, -12),
     ];
     path.forEach((line) => lettersScene.add(line));
 
@@ -169,7 +167,7 @@ const WorkSection = () => {
           );
           const vector = point.clone().project(lettersCamera);
           const positions = letterPositions.get(element);
-          const sectionRect = workSection.getBoundingClientRect();
+          const sectionRect = section.getBoundingClientRect();
           positions.target = {
             x: (-vector.x * 0.5 + 0.5) * sectionRect.width,
             y: (-vector.y * 0.5 + 0.5) * sectionRect.height,
@@ -180,7 +178,7 @@ const WorkSection = () => {
 
     const updateLetterPositions = () => {
       letterPositions.forEach((positions, element) => {
-        const sectionRect = workSection.getBoundingClientRect();
+        const sectionRect = section.getBoundingClientRect();
         const distX = positions.target.x - positions.current.x;
         if (Math.abs(distX) > sectionRect.width * 0.7) {
           positions.current.x = positions.target.x;
@@ -216,22 +214,130 @@ const WorkSection = () => {
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    // Remove ScrollTrigger - WorkBadge will control the animation
-    // Initialize WorkSection immediately
+    // Main ScrollTrigger - handles both portal and work section
+    const scrollTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=800%', // Increased for more scroll time in work section
+      pin: true,
+      pinSpacing: true,
+      scrub: 1.5, // Smoother scrubbing
+      onUpdate: (self) => {
+        const progress = self.progress;
+        
+        // Opening: 0-10% - Portal opens (faster)
+        // Middle: 10-90% - Work section active (80% of scroll)
+        // Closing: 90-100% - Portal closes back to oval (faster)
+        
+        if (progress < 0.1) {
+          // OPENING - Show oval, then expand (faster opening)
+          const openProgress = progress / 0.1; // 0 to 1
+          const ovalScale = 1 + (openProgress * 30);
+          
+          gsap.set(section, {
+            backgroundColor: '#272860',
+            transition: 'background-color 0.6s ease-out'
+          });
+          gsap.set(backgroundRef.current, {
+            opacity: 1 - (openProgress * 2.5) // Fade out faster
+          });
+          gsap.set(oval, {
+            scale: ovalScale,
+            opacity: 1 - (openProgress * 2.5) // Fade out faster
+          });
+          gsap.set(workText, {
+            opacity: 1 - (openProgress * 3) // Fade out faster
+          });
+          gsap.set(textContainer, {
+            opacity: openProgress * 2,
+            scale: 0.5 + (openProgress * 0.5)
+          });
+          gsap.set(cardsContainer, {
+            opacity: openProgress > 0.6 ? (openProgress - 0.6) * 2.5 : 0 // Start later, fade faster
+          });
+          gsap.set(lettersCanvasRef.current, {
+            opacity: openProgress * 2
+          });
+          
+        } else if (progress >= 0.1 && progress <= 0.9) {
+          // MIDDLE - Work section fully visible, pure black background
+          const workProgress = (progress - 0.1) / 0.8;
+          
+          gsap.set(section, {
+            backgroundColor: '#000',
+            transition: 'background-color 0.6s ease-out'
+          });
+          gsap.set(backgroundRef.current, {
+            opacity: 0,
+            display: 'none' // Completely hide to prevent any transparency
+          });
+          gsap.set(oval, {
+            scale: 1,
+            opacity: 0,
+            display: 'none' // Completely hide
+          });
+          gsap.set(workText, {
+            opacity: 0
+          });
+          gsap.set(textContainer, {
+            opacity: 1,
+            scale: 1
+          });
+          gsap.set(cardsContainer, {
+            opacity: 1
+          });
+          gsap.set(lettersCanvasRef.current, {
+            opacity: 1
+          });
+          
+          updateTargetPositions(workProgress);
+          textContainer.classList.add('expanded');
+          
+        } else {
+          // CLOSING - Shrink back to oval (faster closing)
+          const closeProgress = (progress - 0.9) / 0.1; // 0 to 1
+          const ovalScale = 30 - (closeProgress * 29); // 30 to 1
+          
+          gsap.set(section, {
+            backgroundColor: closeProgress > 0.4 ? '#272860' : '#000',
+            transition: 'background-color 0.6s ease-in-out'
+          });
+          gsap.set(backgroundRef.current, {
+            opacity: closeProgress * 2,
+            display: 'block' // Show again
+          });
+          gsap.set(oval, {
+            scale: ovalScale,
+            opacity: closeProgress * 2,
+            display: 'block' // Show again
+          });
+          gsap.set(workText, {
+            opacity: closeProgress * 2.5
+          });
+          gsap.set(textContainer, {
+            opacity: 1 - (closeProgress * 2.5),
+            scale: 1 - (closeProgress * 0.5)
+          });
+          gsap.set(cardsContainer, {
+            opacity: closeProgress < 0.4 ? 1 - (closeProgress * 2.5) : 0
+          });
+          gsap.set(lettersCanvasRef.current, {
+            opacity: 1 - (closeProgress * 2.5)
+          });
+        }
+      },
+    });
+
+    // Initialize
     textContainer.classList.add('expanded');
-    cardsContainer.style.opacity = '1';
-    
     drawGrid(0);
     animate();
     updateTargetPositions(0);
-    
-    // Expose update function globally so WorkBadge can control it
-    window.workSectionUpdate = updateTargetPositions;
 
     const handleResize = () => {
       resizeGridCanvas();
       drawGrid(ScrollTrigger.getAll()[0]?.progress || 0);
-      const sectionRect = workSection.getBoundingClientRect();
+      const sectionRect = section.getBoundingClientRect();
       lettersCamera.aspect = sectionRect.width / sectionRect.height;
       lettersCamera.updateProjectionMatrix();
       lettersRenderer.setSize(sectionRect.width, sectionRect.height);
@@ -239,20 +345,16 @@ const WorkSection = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    // Also listen for zoom changes
     window.addEventListener('orientationchange', handleResize);
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      // Clean up global reference
-      window.workSectionUpdate = null;
+      scrollTrigger.kill();
 
-      // Clean up letter elements
       letterPositions.forEach((_, element) => {
         if (element.parentNode) {
           element.parentNode.removeChild(element);
@@ -260,7 +362,6 @@ const WorkSection = () => {
       });
       letterPositions.clear();
 
-      // Clean up Three.js
       path.forEach((line) => {
         line.geometry.dispose();
         line.material.dispose();
@@ -271,10 +372,9 @@ const WorkSection = () => {
   }, []);
 
   return (
-    <section className="work" ref={workSectionRef}>
-      {/* Scoped styles so this component is standalone */}
+    <section className="work-portal" ref={sectionRef}>
       <style>{`
-        .work { 
+        .work-portal { 
           background-color: #000; 
           overflow: hidden; 
           position: relative; 
@@ -284,40 +384,62 @@ const WorkSection = () => {
           opacity: 1;
           visibility: visible;
         }
-        .work canvas { position: absolute; top:0; left:0; }
+        .work-portal canvas { position: absolute; top:0; left:0; }
         #grid-canvas{ z-index:-1 }
         #letters-canvas{ z-index:1 }
-        .text-container{ width:100%; height:100%; position:absolute; top:0; left:0; z-index:2; pointer-events:none; perspective:2500px; perspective-origin:center }
-        .letter{ position:absolute; font-family: 'Bigger', sans-serif; font-size:9.36rem; font-weight:bold; color:#f8e800; z-index:3; transform-origin:center; transform-style:preserve-3d; will-change:transform }
-        .cards{ 
-          position:relative; 
-          width:500vw; 
-          height:100vh; 
-          padding-left:100vw; 
-          overflow:hidden; 
-          display:flex; 
-          justify-content:space-around; 
-          align-items:flex-start; 
-          flex-wrap:wrap; 
-          align-content:space-around; 
-          z-index:10;
-        }
+        .text-container{ width:100%; height:100%; position:absolute; top:0; left:0; z-index:2; pointer-events:none; perspective:2500px; perspective-origin:center; opacity: 0; }
+        .letter{ position:absolute; font-family: 'Bigger', sans-serif; font-size:15rem; font-weight:bold; color:#f8e800; z-index:3; transform-origin:center; transform-style:preserve-3d; will-change:transform }
+        .cards{ position:relative; width:800vw; height:100vh; padding-left:100vw; overflow:hidden; display:flex; justify-content:space-around; align-items:flex-start; flex-wrap:wrap; align-content:space-around; z-index:10; opacity: 0; }
         .card{ width:28vw; height:40vh; padding:8px; background-color:#f8e800; display:flex; flex-direction:column; gap:8px; position:absolute }
         .card-img{ flex:1; overflow:hidden }
         .card-img video{ width:100%; height:100%; object-fit:cover }
         .card-copy{ height:12px; display:flex; justify-content:space-between; align-items:center; padding:0 4px; text-transform:uppercase; font-family:'Akkurat Mono'; font-size:12px; color:#272860 }
-        /* Positioning for 7 cards */
-        .card:nth-child(1){ top:5%; left:105vw }
-        .card:nth-child(2){ top:50%; left:145vw }
-        .card:nth-child(3){ top:5%; left:185vw }
-        .card:nth-child(4){ top:50%; left:225vw }
-        .card:nth-child(5){ top:5%; left:265vw }
-        .card:nth-child(6){ top:50%; left:305vw }
-        .card:nth-child(7){ top:5%; left:345vw }
+        .card:nth-child(1){ top:5%; left:120vw }
+        .card:nth-child(2){ top:50%; left:200vw }
+        .card:nth-child(3){ top:5%; left:280vw }
+        .card:nth-child(4){ top:50%; left:360vw }
+        .card:nth-child(5){ top:5%; left:440vw }
+        .card:nth-child(6){ top:50%; left:520vw }
+        .card:nth-child(7){ top:5%; left:600vw }
+        .oval-container{ position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; }
+        .oval{ width:300px; height:500px; background-color:#000; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 3px rgba(248, 232, 0, 0.6); border:2px solid rgba(248, 232, 0, 0.3); transform-origin:center center; }
+        .work-text{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+        .work-letter{ font-size:100px; line-height:0.9; color:#f8e800; font-weight:900; font-family:'Bigger', sans-serif; }
       `}</style>
 
+      {/* Initial Dark Blue Background with Square Grid */}
+      <div 
+        ref={backgroundRef}
+        className="initial-background"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: '#272860',
+          backgroundImage: `
+            linear-gradient(to right, rgba(248, 232, 0, 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(248, 232, 0, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '120px 120px',
+          zIndex: 0,
+          opacity: 1
+        }}
+      />
+      
       <canvas id="grid-canvas" ref={gridCanvasRef}></canvas>
       <canvas id="letters-canvas" ref={lettersCanvasRef}></canvas>
+      
+      {/* Portal Oval */}
+      <div className="oval-container" ref={ovalRef}>
+        <div className="oval">
+          <div className="work-text" ref={workTextRef}>
+            <span className="work-letter">W</span>
+            <span className="work-letter">O</span>
+            <span className="work-letter">R</span>
+            <span className="work-letter">K</span>
+          </div>
+        </div>
+      </div>
+      
       <div className="text-container" ref={textContainerRef}></div>
       <div className="cards" ref={cardsContainerRef}>
         {cards.map((card, index) => (
@@ -342,4 +464,4 @@ const WorkSection = () => {
   );
 };
 
-export default WorkSection;
+export default WorkSectionWithPortal;
