@@ -17,17 +17,17 @@ const WorkSectionWithPortal = () => {
     { video: '/7.mp4', title: 'Desert Tunnel', number: '682943' },
   ];
 
-  const sectionRef = useRef(null);
-  const textContainerRef = useRef(null);
-  const cardsContainerRef = useRef(null);
-  const gridCanvasRef = useRef(null);
-  const lettersCanvasRef = useRef(null);
-  const animationFrameRef = useRef(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const gridCanvasRef = useRef<HTMLCanvasElement>(null);
+  const lettersCanvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const letterPositionsRef = useRef(new Map());
   const currentXPositionRef = useRef(0);
-  const ovalRef = useRef(null);
-  const workTextRef = useRef(null);
-  const backgroundRef = useRef(null);
+  const ovalRef = useRef<HTMLDivElement>(null);
+  const workTextRef = useRef<HTMLDivElement>(null);
+  const backgroundRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -36,14 +36,18 @@ const WorkSectionWithPortal = () => {
     const oval = ovalRef.current;
     const workText = workTextRef.current;
 
+    if (!section || !cardsContainer || !textContainer || !oval || !workText) return;
+
     const initialSectionRect = section.getBoundingClientRect();
     const moveDistance = initialSectionRect.width * 8; // Increased from 5 to 8 for more spread
 
-    const lerp = (start, end, t) => start + (end - start) * t;
+    const lerp = (start: number, end: number, t: number) => start + (end - start) * t;
 
     // Grid Canvas Setup
     const gridCanvas = gridCanvasRef.current;
+    if (!gridCanvas) return;
     const gridCtx = gridCanvas.getContext('2d');
+    if (!gridCtx) return;
 
     const resizeGridCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -102,7 +106,7 @@ const WorkSectionWithPortal = () => {
     lettersCamera.position.z = 20;
 
     const lettersRenderer = new THREE.WebGLRenderer({
-      canvas: lettersCanvasRef.current,
+      canvas: lettersCanvasRef.current as HTMLCanvasElement,
       antialias: true,
       alpha: true,
     });
@@ -113,7 +117,7 @@ const WorkSectionWithPortal = () => {
 
     const lettersScene = new THREE.Scene();
 
-    const createTextAnimationPath = (yPos, amplitude, startY) => {
+    const createTextAnimationPath = (yPos: number, amplitude: number, startY: number): any => {
       const points = [];
       for (let i = 0; i <= 20; i++) {
         const t = i / 20;
@@ -130,7 +134,7 @@ const WorkSectionWithPortal = () => {
       const line = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(curve.getPoints(100)),
         new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 })
-      );
+      ) as any;
       line.curve = curve;
       return line;
     };
@@ -144,7 +148,7 @@ const WorkSectionWithPortal = () => {
     path.forEach((line) => lettersScene.add(line));
 
     const letterPositions = letterPositionsRef.current;
-    path.forEach((line, i) => {
+    path.forEach((line: any, i) => {
       line.letterElements = Array.from({ length: 8 }, () => {
         const el = document.createElement('div');
         el.className = 'letter';
@@ -160,8 +164,8 @@ const WorkSectionWithPortal = () => {
 
     const lineSpeedMultipliers = [0.8, 1, 0.7, 0.9];
     const updateTargetPositions = (scrollProgress = 0) => {
-      path.forEach((line, lineIndex) => {
-        line.letterElements.forEach((element, i) => {
+      path.forEach((line: any, lineIndex) => {
+        line.letterElements.forEach((element: any, i: number) => {
           const point = line.curve.getPoint(
             (i / 7 + scrollProgress * lineSpeedMultipliers[lineIndex]) % 1
           );
@@ -177,7 +181,7 @@ const WorkSectionWithPortal = () => {
     };
 
     const updateLetterPositions = () => {
-      letterPositions.forEach((positions, element) => {
+      letterPositions.forEach((positions: any, element: any) => {
         const sectionRect = section.getBoundingClientRect();
         const distX = positions.target.x - positions.current.x;
         if (Math.abs(distX) > sectionRect.width * 0.7) {
@@ -362,7 +366,7 @@ const WorkSectionWithPortal = () => {
       });
       letterPositions.clear();
 
-      path.forEach((line) => {
+      path.forEach((line: any) => {
         line.geometry.dispose();
         line.material.dispose();
         lettersScene.remove(line);
