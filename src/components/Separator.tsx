@@ -1,6 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+
+// Generate random binary sequences - moved outside component
+const generateBinarySequence = (length: number) => {
+  return Array.from({ length }, () => Math.floor(Math.random() * 2));
+};
 
 const Separator = () => {
   const [isInView, setIsInView] = useState(false);
@@ -23,15 +28,10 @@ const Separator = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Generate random binary sequences
-  const generateBinarySequence = (length: number) => {
-    return Array.from({ length }, () => Math.floor(Math.random() * 2));
-  };
-
-  const [binarySequence1, setBinarySequence1] = useState(generateBinarySequence(15));
-  const [binarySequence2, setBinarySequence2] = useState(generateBinarySequence(30));
-  const [binarySequence3, setBinarySequence3] = useState(generateBinarySequence(25));
-  const [binarySequence4, setBinarySequence4] = useState(generateBinarySequence(20));
+  const [binarySequence1, setBinarySequence1] = useState(() => generateBinarySequence(15));
+  const [binarySequence2, setBinarySequence2] = useState(() => generateBinarySequence(30));
+  const [binarySequence3, setBinarySequence3] = useState(() => generateBinarySequence(25));
+  const [binarySequence4, setBinarySequence4] = useState(() => generateBinarySequence(20));
 
   // Animate all binary digits together at the same time
   useEffect(() => {

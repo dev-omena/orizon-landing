@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 
 interface WaterDropGridProps {
   className?: string;
@@ -24,7 +24,7 @@ const WaterDropGrid: React.FC<WaterDropGridProps> = ({
   const [animationTime, setAnimationTime] = useState(0);
 
   // Generate water drop distortion effect for full grid
-  const generateWaterDropPath = (time: number) => {
+  const generateWaterDropPath = useCallback((time: number) => {
     const width = 1200;
     const height = 800;
     const centerX = width / 2;
@@ -98,9 +98,9 @@ const WaterDropGrid: React.FC<WaterDropGridProps> = ({
         path += ` L ${finalX} ${finalY}`;
       }
     }
-    
+
     return path;
-  };
+  }, [gridSize, dropRadius, animationDuration, isHovered]);
 
   useEffect(() => {
     let animationId: number;
@@ -122,7 +122,7 @@ const WaterDropGrid: React.FC<WaterDropGridProps> = ({
   useEffect(() => {
     const newPathData = generateWaterDropPath(animationTime);
     setPathData(newPathData);
-  }, [animationTime, gridSize, dropRadius, animationDuration]);
+  }, [animationTime, generateWaterDropPath]);
 
   return (
     <div className={`absolute inset-0 ${className}`}>

@@ -138,17 +138,8 @@ export default function Home() {
         }}>
           <Separator />
         </div>
-        {/* Services Section with Reveal Animation */}
-        <div className={`transform transition-all duration-1500 ease-out ${
-          showSections 
-            ? 'translate-y-0 opacity-100' 
-            : 'translate-y-16 opacity-0'
-        }`}
-        style={{
-          transitionDelay: showSections ? '800ms' : '0ms'
-        }}>
-          <ScrollStackServices />
-        </div>
+        {/* Services Section - NO wrapper animation to avoid conflicts with GSAP pinning */}
+        <ScrollStackServices />
                 {/* Separator with Reveal Animation */}
                 <div className={`transform transition-all duration-1500 ease-out ${
           showSections 
@@ -163,6 +154,17 @@ export default function Home() {
         
 
           <WorkSectionWithPortal />
+                          {/* Separator with Reveal Animation */}
+                          <div className={`transform transition-all duration-1500 ease-out ${
+          showSections 
+            ? 'translate-y-0 opacity-100' 
+            : 'translate-y-16 opacity-0'
+        }`}
+        style={{
+          transitionDelay: showSections ? '1100ms' : '0ms'
+        }}>
+          <Separator />
+        </div>
         {/* CtaSection with Reveal Animation */}
         <div className={`transform transition-all duration-1500 ease-out ${
           showSections 
