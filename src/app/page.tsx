@@ -47,7 +47,7 @@ export default function Home() {
         </div>
 
         {/* Connected Hero Section - Header + Waves + Separator + Banner + Separator as one unit */}
-        <div className="h-screen flex flex-col bg-primary relative overflow-hidden">
+        <div className="flex flex-col bg-primary relative overflow-hidden" style={{ height: 'calc(100vh - 6rem)' }}>
           {/* Waves Section with Reveal Animation */}
           <div className={`flex-shrink-0 relative border-b border-orizon-secondary transform transition-all duration-1200 ease-out ${
             showSections 
@@ -55,26 +55,24 @@ export default function Home() {
               : '-translate-x-full opacity-0 scale-95'
           }`}
           style={{ 
-            height: 'calc((100vh - 6rem) * 0.65)',
+            height: '65%',
             transitionDelay: showSections ? '200ms' : '0ms',
             borderBottomWidth: '1px'
           }}>
             <Waves
-              lineColor="#f8e800"
+              lineColor="rgba(248, 232, 0, 0.6)"
               backgroundColor="#272860"
-              waveSpeedX={0.025}
-              waveSpeedY={0.012}
-              waveAmpX={50}
-              waveAmpY={25}
-              friction={0.92}
-              tension={0.025}
-              maxCursorMove={100}
-              xGap={15}
+              waveSpeedX={0.02}
+              waveSpeedY={0.01}
+              waveAmpX={40}
+              waveAmpY={20}
+              friction={0.7}
+              tension={0.01}
+              maxCursorMove={90}
+              xGap={12}
               yGap={45}
-              style={{
-                filter: 'drop-shadow(0 0 12px rgba(248, 232, 0, 0.3))'
-              }}
-              className="waves-enhanced"
+
+
             />
           </div>
 
@@ -97,7 +95,7 @@ export default function Home() {
               : 'translate-y-full opacity-0'
           }`} 
           style={{ 
-            height: 'calc((100vh - 6rem) * 0.25)',
+            height: '25%',
             transitionDelay: showSections ? '500ms' : '0ms'
           }}>
             <OrizonBanner />
@@ -123,7 +121,9 @@ export default function Home() {
             : 'translate-y-16 opacity-0'
         }`}
         style={{
-          transitionDelay: showSections ? '600ms' : '0ms'
+          transitionDelay: showSections ? '600ms' : '0ms',
+          margin: 0,
+          padding: 0
         }}>
           <OrizonHero />
         </div>

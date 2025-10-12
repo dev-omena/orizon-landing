@@ -1,9 +1,39 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+
 const OrizonHero = () => {
+  const [counts, setCounts] = useState({ countries: 0, clients: 0, projects: 0 });
+
+  useEffect(() => {
+    const targets = { countries: 7, clients: 189, projects: 1000 };
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const interval = duration / steps;
+
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      const progress = step / steps;
+      
+      setCounts({
+        countries: Math.min(Math.floor(targets.countries * progress), targets.countries),
+        clients: Math.min(Math.floor(targets.clients * progress), targets.clients),
+        projects: Math.min(Math.floor(targets.projects * progress), targets.projects),
+      });
+
+      if (step >= steps) {
+        clearInterval(timer);
+        setCounts(targets); // Ensure final values
+      }
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="bg-orizon-primary">
-       <div className="h-screen flex items-center justify-center bg-orizon-primary relative overflow-hidden" style={{ borderBottom: '1px solid #f8e800' }}>
+    <div className="bg-orizon-primary" style={{ margin: 0, padding: 0 }}>
+       <div className="min-h-screen flex items-center justify-center bg-orizon-primary relative overflow-hidden" style={{ borderBottom: '1px solid #f8e800', margin: 0, padding: 0 }}>
          {/* Grid squares background */}
          <div className="absolute inset-0" style={{
            backgroundImage: `
@@ -14,30 +44,43 @@ const OrizonHero = () => {
            backgroundPosition: '0 0, 0 0'
          }} />
         
-        <div className="text-center px-4 relative z-10">
-          <div className="mb-8 flex justify-center items-center gap-4">
-            <div className="w-16 h-16 bg-orizon-secondary rounded-full flex items-center justify-center animate-pulse">
-              <span className="text-3xl">✨</span>
-            </div>
-            <div className="w-24 h-16 bg-orizon-secondary rounded-2xl rotate-12 flex items-center justify-center shadow-2xl">
-              <div className="w-20 h-12 bg-orizon-primary rounded-lg" />
-            </div>
-            <div className="w-24 h-16 bg-orizon-secondary rounded-2xl -rotate-6 flex items-center justify-center shadow-2xl">
-              <div className="w-20 h-12 bg-orizon-primary rounded-lg" />
-            </div>
-            <div className="w-12 h-20 bg-orizon-secondary rounded-2xl rotate-45" />
-          </div>
-          <h1 className="text-7xl md:text-9xl font-black text-orizon-secondary mb-2 tracking-tighter" style={{ fontStyle: 'italic' }}>
-            OMENA
-          </h1>
-          <h2 className="text-6xl md:text-8xl font-black text-orizon-secondary mb-2 tracking-tighter" style={{ fontStyle: 'italic' }}>
-            AGENCY
-          </h2>
-          <p className="text-xl md:text-2xl text-orizon-secondary/80 max-w-4xl mx-auto mb-8 leading-relaxed font-bold">
+        <div className="text-center px-4 relative z-10 flex flex-col items-center justify-center">
+          <p className="text-2xl md:text-3xl text-orizon-secondary/80 max-w-4xl mx-auto mb-16 leading-relaxed font-bold">
             We are always striving for methods to generate phenomenal results.
             <br />
             We have our interest at the heart of everything we do, so we naturally become an extended arm of their business.
           </p>
+          
+          {/* Statistics Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-6xl mx-auto mb-16">
+            <div className="text-center">
+              <div className="text-6xl md:text-7xl font-black text-orizon-secondary mb-3">
+                {counts.countries}
+              </div>
+              <div className="text-xl md:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
+                Countries Served
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-6xl md:text-7xl font-black text-orizon-secondary mb-3">
+                {counts.clients}+
+              </div>
+              <div className="text-xl md:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
+                Happy Clients
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-6xl md:text-7xl font-black text-orizon-secondary mb-3">
+                {counts.projects}+
+              </div>
+              <div className="text-xl md:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
+                Projects Completed
+              </div>
+            </div>
+          </div>
+          
           <div className="mt-8 animate-bounce">
             <div className="text-5xl text-orizon-secondary">↓</div>
           </div>

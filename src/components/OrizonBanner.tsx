@@ -176,62 +176,32 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
            flex-shrink: 0;
            display: flex;
            flex-direction: row;
-           align-items: center;
+           align-items: flex-start;
            margin: 0;
            cursor: default;
-           font: 700 2.2rem / 0.8 var(--font-family-bigger);
+           font-size: clamp(4rem, 12vw, 20rem);
+           font-weight: 700;
+           line-height: 0.8;
+           font-family: var(--font-family-bigger);
            text-transform: uppercase;
-           padding: 0;
+           padding: 0 1rem;
            flex-wrap: nowrap;
            justify-content: center;
            white-space: nowrap;
            overflow: hidden;
-         }
-         
-         @media (min-width: 480px) {
-           .s__title {
-             font-size: 3rem;
-           }
-         }
-         
-         @media (min-width: 640px) {
-           .s__title {
-             font-size: 4.2rem;
-           }
-         }
-         
-         @media (min-width: 768px) {
-           .s__title {
-             font-size: 5.5rem;
-           }
-         }
-         
-         @media (min-width: 1024px) {
-           .s__title {
-             font-size: 7rem;
-           }
-         }
-         
-         @media (min-width: 1280px) {
-           .s__title {
-             font-size: 8.5rem;
-           }
-         }
-         
-         @media (min-width: 1536px) {
-           .s__title {
-             font-size: 10rem;
-           }
+           width: 100%;
+           max-width: 100%;
          }
       `}</style>
        <div 
-         className={`relative w-full bg-orizon-primary h-full flex items-center justify-center ${className}`}
-         style={{ borderBottom: '1px solid #f8e800' }}
+         className={`relative w-full bg-orizon-primary h-full flex items-start justify-center ${className}`}
+         style={{ borderBottom: '1px solid #f8e800', paddingTop: 0 }}
        >
-         <div className="flex items-center justify-center overflow-hidden">
+         <div className="flex items-start justify-center overflow-hidden" style={{ paddingTop: 0, marginTop: 0 }}>
            <h1 
              ref={titleRef}
              className="s__title text-orizon-secondary"
+             style={{ marginTop: 0, paddingTop: 0 }}
            >
             <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
               <div style={{ position: 'relative', display: 'inline-block' }} className="word">

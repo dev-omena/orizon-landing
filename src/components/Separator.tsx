@@ -54,7 +54,7 @@ const Separator = () => {
       className={`relative w-full h-6 flex items-center justify-between px-4 bg-orizon-primary  border-b border-orizon-secondary ${
         isInView ? 'is-in-view' : ''
       }`}
-      style={{ fontFamily: 'monospace', fontSize: '8px', lineHeight: '16px' }}
+      style={{ fontFamily: 'monospace', fontSize: '8px', lineHeight: '16px', margin: 0, padding: '0 1rem' }}
     >
       {/* Left Triangle */}
       <div 

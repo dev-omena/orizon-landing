@@ -9,7 +9,7 @@ const Footer = () => {
       {/* Orizon Icon */}
       <div className="flex items-center justify-center">
         <Image
-          src="/icon.png"
+          src="/Icon.png"
           alt="Orizon Logo"
           width={50}
           height={50}
