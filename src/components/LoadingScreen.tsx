@@ -10,11 +10,11 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Simple loading timer
+    // Quick loading timer
     const timer = setTimeout(() => {
       setIsVisible(false);
       onLoadingComplete?.();
-    }, 2000);
+    }, 600); // Reduced from 2000ms to 600ms
 
     return () => clearTimeout(timer);
   }, [onLoadingComplete]);

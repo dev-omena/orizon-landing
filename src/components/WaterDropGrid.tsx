@@ -104,14 +104,22 @@ const WaterDropGrid: React.FC<WaterDropGridProps> = ({
 
   useEffect(() => {
     let animationId: number;
-    
+    let lastTime = 0;
+    const fps = 30; // Limit to 30fps instead of 60fps for better performance
+    const interval = 1000 / fps;
+
     const animate = (time: number) => {
-      setAnimationTime(time);
       animationId = requestAnimationFrame(animate);
+
+      const elapsed = time - lastTime;
+      if (elapsed > interval) {
+        lastTime = time - (elapsed % interval);
+        setAnimationTime(time);
+      }
     };
-    
+
     animationId = requestAnimationFrame(animate);
-    
+
     return () => {
       if (animationId) {
         cancelAnimationFrame(animationId);

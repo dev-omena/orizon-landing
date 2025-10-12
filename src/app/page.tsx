@@ -1,30 +1,47 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import OrizonBanner from '@/components/OrizonBanner';
-import Waves from '@/components/Waves';
 import OrizonHero from '@/components/OrizonHero';
-import ScrollStackServices from '@/components/scroll-stack';
-import CtaSection from '@/components/CtaSection';
 import Separator from '@/components/Separator';
 import Footer from '@/components/Footer';
 import LoadingScreen from '@/components/LoadingScreen';
-import WorkSectionWithPortal from '@/components/WorkSectionWithPortal';
+
+// Lazy load heavy components with canvas/animations
+const Waves = dynamic(() => import('@/components/Waves'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-primary" />
+});
+
+const ScrollStackServices = dynamic(() => import('@/components/scroll-stack'), {
+  ssr: false,
+  loading: () => <div/>
+});
+
+const WorkSectionWithPortal = dynamic(() => import('@/components/WorkSectionWithPortal'), {
+  ssr: false,
+  loading: () => <div className="w-full h-screen bg-primary" />
+});
+
+const CtaSection = dynamic(() => import('@/components/CtaSection'), {
+  loading: () => <div className="w-full min-h-screen bg-primary" />
+});
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [showSections, setShowSections] = useState(false);
 
   useEffect(() => {
-    // Simulate loading time - longer to enjoy animations
+    // Quick loading - show content immediately
     const timer = setTimeout(() => {
       setIsLoading(false);
       // Start section animations after loading screen
       setTimeout(() => {
         setShowSections(true);
       }, 300);
-    }, 4000);
+    }, 800); // Reduced from 4000ms to 800ms
 
     return () => clearTimeout(timer);
   }, []);
@@ -138,7 +155,7 @@ export default function Home() {
         }}>
           <Separator />
         </div>
-        {/* Services Section - NO wrapper animation to avoid conflicts with GSAP pinning */}
+        
         <ScrollStackServices />
                 {/* Separator with Reveal Animation */}
                 <div className={`transform transition-all duration-1500 ease-out ${

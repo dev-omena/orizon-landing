@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import localFont from 'next/font/local';
 import "./globals.css";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: 'swap', // Improve font loading performance
+  preload: true,
 });
 
 // Using fallback fonts until Halyard font file is added
@@ -22,6 +23,17 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
     apple: '/Fav-icon.png',
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+// Separate viewport export as recommended by Next.js 14+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({

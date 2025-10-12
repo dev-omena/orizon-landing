@@ -307,24 +307,20 @@ const Waves: React.FC<WavesProps> = ({
       const ctx = ctxRef.current;
       if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
-      
-      // Optimized drawing for performance
+
+      // Optimized drawing for performance - no shadow for better FPS
       ctx.lineWidth = 1.2;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.strokeStyle = configRef.current.lineColor;
       
-      // Reduced shadow for better performance
-      ctx.shadowColor = configRef.current.lineColor;
-      ctx.shadowBlur = 1;
-      
-      linesRef.current.forEach((points, lineIndex) => {
+      linesRef.current.forEach((points) => {
         ctx.beginPath();
-        
+
         // First point is always fixed at the border without any effects
         let p1 = { x: points[0].x, y: points[0].y };
         ctx.moveTo(p1.x, p1.y);
-        
+
         points.forEach((p, idx) => {
           if (idx === 0) return; // Skip first point as it's already set
           const isLast = idx === points.length - 1;
@@ -332,12 +328,9 @@ const Waves: React.FC<WavesProps> = ({
           ctx.lineTo(p1.x, p1.y);
           if (isLast) ctx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
         });
-        
+
         ctx.stroke();
       });
-      
-      // Reset shadow
-      ctx.shadowBlur = 0;
     }
 
     function tick(t: number) {
