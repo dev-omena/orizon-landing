@@ -1,35 +1,56 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const OrizonHero = () => {
   const [counts, setCounts] = useState({ countries: 0, clients: 0, projects: 0 });
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const targets = { countries: 7, clients: 189, projects: 1000 };
-    const duration = 2000; // 2 seconds
-    const steps = 60;
-    const interval = duration / steps;
+    const statsElement = statsRef.current;
+    if (!statsElement) return;
 
-    let step = 0;
-    const timer = setInterval(() => {
-      step++;
-      const progress = step / steps;
-      
-      setCounts({
-        countries: Math.min(Math.floor(targets.countries * progress), targets.countries),
-        clients: Math.min(Math.floor(targets.clients * progress), targets.clients),
-        projects: Math.min(Math.floor(targets.projects * progress), targets.projects),
-      });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+            
+            // Start counter animation
+            const targets = { countries: 7, clients: 189, projects: 1000 };
+            const duration = 2000; // 2 seconds
+            const steps = 60;
+            const interval = duration / steps;
 
-      if (step >= steps) {
-        clearInterval(timer);
-        setCounts(targets); // Ensure final values
-      }
-    }, interval);
+            let step = 0;
+            const timer = setInterval(() => {
+              step++;
+              const progress = step / steps;
+              
+              setCounts({
+                countries: Math.min(Math.floor(targets.countries * progress), targets.countries),
+                clients: Math.min(Math.floor(targets.clients * progress), targets.clients),
+                projects: Math.min(Math.floor(targets.projects * progress), targets.projects),
+              });
 
-    return () => clearInterval(timer);
-  }, []);
+              if (step >= steps) {
+                clearInterval(timer);
+                setCounts(targets); // Ensure final values
+              }
+            }, interval);
+          }
+        });
+      },
+      { threshold: 0.3 } // Trigger when 30% of the element is visible
+    );
+
+    observer.observe(statsElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasAnimated]);
 
   return (
     <div className="bg-orizon-primary" style={{ margin: 0, padding: 0 }}>
@@ -52,7 +73,7 @@ const OrizonHero = () => {
           </p>
           
           {/* Statistics Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-6xl mx-auto mb-16">
+          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-6xl mx-auto mb-16">
             <div className="text-center">
               <div className="text-6xl md:text-7xl font-black text-orizon-secondary mb-3">
                 {counts.countries}
