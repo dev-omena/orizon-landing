@@ -8,7 +8,7 @@ const CtaSection = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className="h-screen flex items-center justify-center bg-orizon-primary relative overflow-hidden" style={{ borderBottom: '1px solid #f8e800' }}>
+    <div id="cta-section" className="h-screen flex items-center justify-center bg-orizon-primary relative overflow-hidden" style={{ borderBottom: '1px solid #f8e800' }}>
       {/* Animated grid effect with hover push */}
       <AnimatedGrid
         lineColor="rgba(248, 232, 0, 0.3)"

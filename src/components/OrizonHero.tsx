@@ -53,7 +53,7 @@ const OrizonHero = () => {
   }, [hasAnimated]);
 
   return (
-    <div className="bg-orizon-primary" style={{ margin: 0, padding: 0 }}>
+    <div id="orizon-hero-section" className="bg-orizon-primary" style={{ margin: 0, padding: 0 }}>
        <div className="min-h-screen flex items-center justify-center bg-orizon-primary relative overflow-hidden" style={{ borderBottom: '1px solid #f8e800', margin: 0, padding: 0 }}>
          {/* Grid squares background */}
          <div className="absolute inset-0" style={{

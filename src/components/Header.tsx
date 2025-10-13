@@ -81,18 +81,36 @@ export default function Header() {
         {/* Navigation - 6 columns */}
         <nav ref={navRef} className="col-span-6 flex items-center justify-center border-r border-secondary px-2 md:px-6">
           <div className="flex items-center justify-between w-full px-2 md:px-4">
-            <a href="#about" className="text-xs md:text-sm font-medium hover:opacity-70 transition-opacity uppercase tracking-wide group relative">
+            <button 
+              onClick={() => {
+                const element = document.getElementById('orizon-hero-section');
+                element?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-xs md:text-sm font-medium hover:opacity-70 transition-opacity uppercase tracking-wide group relative cursor-pointer"
+            >
               <span className="absolute -left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">→</span>
               <span className="hidden md:inline">ABOUT</span>
-            </a>
-            <a href="#work" className="text-xs md:text-sm font-medium hover:opacity-70 transition-opacity uppercase tracking-wide group relative">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.querySelector('.work-portal');
+                element?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-xs md:text-sm font-medium hover:opacity-70 transition-opacity uppercase tracking-wide group relative cursor-pointer"
+            >
               <span className="absolute -left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">→</span>
               <span className="hidden md:inline">WORK</span>
-            </a>
-            <a href="#contact" className="text-xs md:text-sm font-medium hover:opacity-70 transition-opacity uppercase tracking-wide group relative">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('cta-section');
+                element?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-xs md:text-sm font-medium hover:opacity-70 transition-opacity uppercase tracking-wide group relative cursor-pointer"
+            >
               <span className="absolute -left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">→</span>
               <span className="hidden md:inline">CONTACT</span>
-            </a>
+            </button>
           </div>
         </nav>
 

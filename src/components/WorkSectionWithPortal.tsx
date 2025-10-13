@@ -478,9 +478,38 @@ const WorkSectionWithPortal = () => {
         .card:nth-child(6){ top:50%; left:520vw }
         .card:nth-child(7){ top:5%; left:600vw }
         .oval-container{ position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; }
-  .oval{ width:300px; height:500px; background-color:#f8e800; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 3px rgba(39, 40, 96, 0.6); border:2px solid rgba(39, 40, 96, 0.3); transform-origin:center center; background-image: radial-gradient(circle at 25% 25%, #272860 1.5px, transparent 1.5px), radial-gradient(circle at 75% 75%, #272860 1.5px, transparent 1.5px), radial-gradient(circle at 25% 75%, #272860 1.5px, transparent 1.5px), radial-gradient(circle at 75% 25%, #272860 1.5px, transparent 1.5px); background-size: 40px 40px; }
-        .work-text{ display:flex; flex-direction:column; align-items:center; gap:8px; }
-        .work-letter{ font-size:100px; line-height:0.9; color:#272860; font-weight:900; font-family:'Bigger', sans-serif; }
+        .oval{ 
+          width:280px; 
+          height:520px; 
+          background-color:#f8e800; 
+          border-radius:140px; 
+          display:flex; 
+          align-items:center; 
+          justify-content:center; 
+          box-shadow:0 0 0 10px #272860, 0 0 0 16px #f8e800; 
+          border:none; 
+          transform-origin:center center; 
+          background-image: radial-gradient(circle at center, #272860 2px, transparent 2px); 
+          background-size: 20px 20px; 
+          position: relative;
+        }
+        .work-text{ 
+          display:flex; 
+          flex-direction:column; 
+          align-items:center; 
+          justify-content:center;
+          gap:0px; 
+          height:100%;
+          width:100%;
+        }
+        .work-letter{ 
+          font-size:80px; 
+          line-height:0.8; 
+          color:#272860; 
+          font-weight:900; 
+          font-family:'Bigger', sans-serif; 
+          text-align:center;
+        }
       `}</style>
 
       {/* Initial Dark Blue Background with Square Grid */}

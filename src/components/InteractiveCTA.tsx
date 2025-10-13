@@ -25,10 +25,11 @@ export default function InteractiveCTA() {
         <div
           className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-700 ease-out ${hovered ? 'pulse-glow' : ''}`}
           style={{
-          width: hovered ? '480px' : '128px',
-          height: hovered ? '480px' : '128px',
-            border: '4px solid #f8e800',
-            background: 'transparent',
+            width: hovered ? '480px' : '128px',
+            height: hovered ? '480px' : '128px',
+            border: hovered ? '4px solid #272860' : '4px solid #f8e800',
+            boxShadow: hovered ? '0 0 32px #272860' : undefined,
+            background: hovered ? '#f8e800' : 'transparent',
             overflow: 'hidden',
           }}
         >
@@ -37,7 +38,7 @@ export default function InteractiveCTA() {
             <div
               className="absolute inset-[12px] rounded-full"
               style={{
-                backgroundImage: 'radial-gradient(circle, rgba(248, 232, 0, 0.6) 1.5px, transparent 1.5px)',
+                backgroundImage: 'radial-gradient(circle, #272860 1.5px, transparent 1.5px)',
                 backgroundSize: '20px 20px',
                 backgroundPosition: 'center center',
                 zIndex: 1,
@@ -49,18 +50,18 @@ export default function InteractiveCTA() {
           {/* Two-Line Layout: LET'S and WORK visible on hover, bobbing together */}
           {hovered && (
           <div
-            className="absolute top-1/2 left-1/2 font-black text-center uppercase"
-            style={{
-              transform: 'translate(-50%, -50%)',
-              zIndex: 10,
-              pointerEvents: 'none',
-              color: '#f8e800',
-              fontSize: '6rem',
-              lineHeight: '1',
-              width: '100%',
-              height: '12rem',
-            }}
-          >
+             className="absolute top-1/2 left-1/2 font-black text-center uppercase"
+             style={{
+               transform: 'translate(-50%, -50%)',
+               zIndex: 10,
+               pointerEvents: 'none',
+               color: '#272860',
+               fontSize: '6rem',
+               lineHeight: '1',
+               width: '100%',
+               height: '12rem',
+             }}
+           >
             {/* Top Line - LET'S */}
             <div className={'float-slow'}
               style={{
@@ -122,11 +123,12 @@ export default function InteractiveCTA() {
           {/* Email at bottom */}
           {hovered && (
             <div
-              className="absolute bottom-8 inset-x-0 text-center text-orizon-secondary font-bold text-xs tracking-widest uppercase email-appear"
+              className="absolute bottom-8 inset-x-0 text-center font-bold text-xs tracking-widest uppercase email-appear"
               style={{
                 zIndex: 10,
                 pointerEvents: 'none',
                 animationDelay: '200ms',
+                color: '#272860',
               }}
             >
               <span style={{ display: 'inline-block' }}>HI@OMENA.CO</span>
@@ -135,10 +137,11 @@ export default function InteractiveCTA() {
 
           {/* Inner dark circle */}
           <div
-            className="absolute inset-[4px] bg-orizon-primary rounded-full transition-all duration-700 ease-out"
+            className={`absolute inset-[4px] rounded-full transition-all duration-700 ease-out${hovered ? '' : ' bg-orizon-primary'}`}
+            style={hovered ? { background: '#f8e800' } : {}}
           >
             {/* Content circle */}
-            <div className="absolute inset-[8px] bg-orizon-primary rounded-full overflow-hidden">
+            <div className="absolute inset-[8px] rounded-full overflow-hidden" style={hovered ? { background: '#f8e800' } : { background: '#272860' }}>
               {/* Floating Stars */}
               {hovered && (
                 <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
