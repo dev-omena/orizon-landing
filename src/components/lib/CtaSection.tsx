@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import AnimatedGrid from './lib/AnimatedGrid';
-import InteractiveCTA from './InteractiveCTA';
+import WaterDropGrid from '../WaterDropGrid';
+import InteractiveCTA from '../InteractiveCTA';
 
 const CtaSection = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -14,15 +14,17 @@ const CtaSection = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Animated grid effect with hover push */}
-      <AnimatedGrid
+      {/* Single water drop grid effect */}
+      <WaterDropGrid 
         lineColor="rgba(248, 232, 0, 0.3)"
-        animationDuration={10000}
+        gridSize={80}
+        dropRadius={400}
+        animationDuration={4000}
         isHovered={isHovered}
       />
-
+      
       {/* Interactive CTA */}
-       <InteractiveCTA />
+  <InteractiveCTA />
     </div>
   );
 };
