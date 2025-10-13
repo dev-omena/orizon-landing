@@ -64,7 +64,7 @@ export default function Home() {
         </div>
 
         {/* Connected Hero Section - Header + Waves + Separator + Banner + Separator as one unit */}
-        <div className="flex flex-col bg-primary relative overflow-hidden" style={{ height: 'calc(100vh - 6rem)' }}>
+        <div className="flex flex-col bg-primary relative overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
           {/* Waves Section with Reveal Animation */}
           <div className={`flex-shrink-0 relative border-b border-orizon-secondary transform transition-all duration-1200 ease-out ${
             showSections 
