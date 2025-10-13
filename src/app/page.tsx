@@ -81,12 +81,12 @@ export default function Home() {
               backgroundColor="#272860"
               waveSpeedX={0.02}
               waveSpeedY={0.01}
-              waveAmpX={40}
-              waveAmpY={20}
-              friction={0.7}
+              waveAmpX={20}
+              waveAmpY={10}
+              friction={0.8}
               tension={0.01}
               maxCursorMove={90}
-              xGap={12}
+              xGap={15}
               yGap={45}
 
 
