@@ -163,7 +163,7 @@ const WorkSectionWithPortal = () => {
       });
     });
 
-    const lineSpeedMultipliers = [0.8, 1, 0.7, 0.9];
+    const lineSpeedMultipliers = [0.08, 1, 0.07, 0.09]; // W=0.08 (10x slower), O=1 (normal), R=0.07 (10x slower), K=0.09 (10x slower)
     const updateTargetPositions = (scrollProgress = 0) => {
       path.forEach((line: any, lineIndex) => {
         line.letterElements.forEach((element: any, i: number) => {
@@ -479,10 +479,12 @@ const WorkSectionWithPortal = () => {
         .card:nth-child(7){ top:5%; left:600vw }
         .oval-container{ position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; }
         .oval{ 
-          width:280px; 
-          height:520px; 
+          width:min(200px, 18vw); 
+          height:calc(100vh - 240px); 
+          max-height:calc(100vh - 240px);
+          min-height:400px;
           background-color:#f8e800; 
-          border-radius:140px; 
+          border-radius:calc(min(200px, 18vw) / 2); 
           display:flex; 
           align-items:center; 
           justify-content:center; 
@@ -525,6 +527,7 @@ const WorkSectionWithPortal = () => {
             linear-gradient(to bottom, rgba(248, 232, 0, 0.1) 1px, transparent 1px)
           `,
           backgroundSize: '120px 120px',
+          backgroundPosition: 'center center',
           zIndex: 0,
           opacity: 1
         }}

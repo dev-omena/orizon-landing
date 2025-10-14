@@ -232,11 +232,12 @@ const Waves: React.FC<WavesProps> = ({
       const { width, height } = boundingRef.current;
       linesRef.current = [];
       const oWidth = width + 200;
+      const oHeight = height + 30;
       const { xGap, yGap } = configRef.current;
       const totalLines = Math.ceil(oWidth / xGap);
-      const totalPoints = Math.ceil(height / yGap) + 1;
+      const totalPoints = Math.ceil(oHeight / yGap);
       const xStart = (width - xGap * totalLines) / 2;
-      const yStart = 0; // Start at the top border
+      const yStart = (height - yGap * totalPoints) / 2;
       for (let i = 0; i <= totalLines; i++) {
         const pts: Point[] = [];
         for (let j = 0; j <= totalPoints; j++) {
@@ -257,18 +258,7 @@ const Waves: React.FC<WavesProps> = ({
       const noise = noiseRef.current;
       const { waveSpeedX, waveSpeedY, waveAmpX, waveAmpY, friction, tension, maxCursorMove } = configRef.current;
       lines.forEach(pts => {
-        pts.forEach((p, idx) => {
-          // Keep first point fixed at the top border
-          if (idx === 0) {
-            p.wave.x = 0;
-            p.wave.y = 0;
-            p.cursor.x = 0;
-            p.cursor.y = 0;
-            p.cursor.vx = 0;
-            p.cursor.vy = 0;
-            return;
-          }
-          
+        pts.forEach(p => {
           const move = noise.perlin2((p.x + time * waveSpeedX) * 0.002, (p.y + time * waveSpeedY) * 0.0015) * 12;
           p.wave.x = Math.cos(move) * waveAmpX;
           p.wave.y = Math.sin(move) * waveAmpY;
@@ -307,30 +297,24 @@ const Waves: React.FC<WavesProps> = ({
       const ctx = ctxRef.current;
       if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
-
-      // Optimized drawing for performance - no shadow for better FPS
+      ctx.beginPath();
+      ctx.strokeStyle = configRef.current.lineColor;
       ctx.lineWidth = 1.2;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = configRef.current.lineColor;
       
-      linesRef.current.forEach((points) => {
-        ctx.beginPath();
-
-        // First point is always fixed at the border without any effects
-        let p1 = { x: points[0].x, y: points[0].y };
+      linesRef.current.forEach(points => {
+        let p1 = moved(points[0], false);
         ctx.moveTo(p1.x, p1.y);
-
         points.forEach((p, idx) => {
-          if (idx === 0) return; // Skip first point as it's already set
           const isLast = idx === points.length - 1;
           p1 = moved(p, !isLast);
+          const p2 = moved(points[idx + 1] || points[points.length - 1], !isLast);
           ctx.lineTo(p1.x, p1.y);
-          if (isLast) ctx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
+          if (isLast) ctx.moveTo(p2.x, p2.y);
         });
-
-        ctx.stroke();
       });
+      ctx.stroke();
     }
 
     function tick(t: number) {

@@ -171,20 +171,20 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
            --color-primary: #f40c3f;
            --color-secondary: #160000;
            --font-family-bigger: system-ui, -apple-system, sans-serif;
-           
+
            flex-grow: 0;
            flex-shrink: 0;
            display: flex;
            flex-direction: row;
-           align-items: flex-start;
+           align-items: center;
            margin: 0;
            cursor: default;
            font-size: clamp(4rem, 12vw, 20rem);
            font-weight: 700;
-           line-height: 0.8;
+           line-height: 0.75;
            font-family: var(--font-family-bigger);
            text-transform: uppercase;
-           padding: 0 1rem;
+           padding: 0;
            flex-wrap: nowrap;
            justify-content: center;
            white-space: nowrap;
@@ -193,43 +193,44 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
            max-width: 100%;
          }
       `}</style>
-       <div 
-         className={`relative w-full bg-orizon-primary h-full flex items-start justify-center ${className}`}
-         style={{ borderBottom: '1px solid #f8e800', paddingTop: 0 }}
+       <div
+         className={`relative w-full bg-orizon-primary h-full flex items-center justify-center overflow-hidden ${className}`}
+         style={{ borderBottom: '1px solid #f8e800', padding: 0 }}
        >
-         <div className="flex items-start justify-center overflow-hidden" style={{ paddingTop: 0, marginTop: 0 }}>
-           <h1 
+         <div className="flex items-center justify-center overflow-hidden w-full h-full" style={{ padding: 0, margin: 0 }}>
+           <h1
              ref={titleRef}
              className="s__title text-orizon-secondary"
-             style={{ marginTop: 0, paddingTop: 0 }}
+             style={{ margin: 0, padding: 0, display: 'flex', alignItems: 'center' }}
            >
-            <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
-              <div style={{ position: 'relative', display: 'inline-block' }} className="word">
+            <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+              <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }} className="word">
                 {renderAnimatedText('OMENA', 0)}
-              </div>  
+              </div>
             </span>
-             <svg 
+             <svg
                className="s__title__asset js-star text-orizon-secondary"
-              width="48" 
-              height="48" 
+              width="48"
+              height="48"
               viewBox="0 0 49 49"
-              style={{ 
-                display: 'inline-block',
-                verticalAlign: 'middle',
+              style={{
+                display: 'inline-flex',
+                alignSelf: 'center',
                 translate: 'none',
                 rotate: 'none',
                 scale: 'none',
                 transform: 'translate(0px, 0px)',
-                margin: '0 1rem'
-              }} 
+                margin: '0 1rem',
+                flexShrink: 0
+              }}
             >
               <path 
                 fill="currentColor" 
                 d="m24.5 0 3.3 21.2L49 24.5l-21.2 3.3L24.5 49l-3.3-21.2L0 24.5l21.2-3.3L24.5 0z"
               />
             </svg>
-            <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-block' }}>
-              <div style={{ position: 'relative', display: 'inline-block' }} className="word">
+            <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+              <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }} className="word">
                 {renderAnimatedText('AGENCY', 6)}
               </div>
             </span>

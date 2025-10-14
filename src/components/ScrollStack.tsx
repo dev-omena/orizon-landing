@@ -52,48 +52,59 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       end: `+=${scrollLength}%`,
       pin: true,
       pinSpacing: true,
-      scrub: 2,
+      scrub: 1,
       onUpdate: (self) => {
         const progress = self.progress;
         const totalCards = cards.length;
 
-        // Which card should be visible
-        const currentIndex = Math.min(
-          Math.floor(progress * totalCards),
-          totalCards - 1
-        );
+        // Continuous progress calculation (no floor)
+        const continuousIndex = progress * totalCards;
 
         cards.forEach((card, i) => {
-          if (i > currentIndex) {
-            // Future cards - hidden below
-            gsap.set(card, {
-              yPercent: 100,
-              opacity: 0,
-              scale: 1,
-              zIndex: i
-            });
-          } else if (i === currentIndex) {
-            // Current card - animate in from bottom
-            const cardProgress = (progress * totalCards) - i;
-            const yPos = 100 * (1 - cardProgress);
+          // Calculate smooth transition progress for each card
+          const cardStart = i / totalCards;
+          const cardEnd = (i + 1) / totalCards;
+          const cardProgress = (progress - cardStart) / (cardEnd - cardStart);
 
-            gsap.set(card, {
-              yPercent: Math.max(yPos, 0),
+          // Clamp cardProgress between 0 and 1
+          const clampedProgress = Math.max(0, Math.min(1, cardProgress));
+
+          if (continuousIndex < i) {
+            // Future cards - waiting below
+            gsap.to(card, {
+              yPercent: 100,
               opacity: 1,
-              scale: 1 - (cardProgress * 0.05),
-              zIndex: 100 + i
+              scale: 0.9,
+              zIndex: i,
+              duration: 0.3,
+              ease: 'power2.out'
+            });
+          } else if (continuousIndex >= i && continuousIndex < i + 1) {
+            // Current card - animating in
+            const yPos = 100 * (1 - clampedProgress);
+            const scaleVal = 0.9 + (clampedProgress * 0.1);
+
+            gsap.to(card, {
+              yPercent: yPos,
+              opacity: 1,
+              scale: scaleVal,
+              zIndex: 100 + i,
+              duration: 0.3,
+              ease: 'power2.out'
             });
           } else {
             // Past cards - stacked at top
-            const stackDepth = currentIndex - i;
-            const stackOffset = -stackDepth * 20;
+            const stackDepth = Math.floor(continuousIndex) - i;
+            const stackOffset = Math.min(stackDepth * 8, 40);
 
-            gsap.set(card, {
+            gsap.to(card, {
               yPercent: 0,
-              y: stackOffset,
+              y: -stackOffset,
               opacity: 1,
-              scale: 0.95 - (stackDepth * 0.02),
-              zIndex: i
+              scale: Math.max(0.85, 1 - (stackDepth * 0.03)),
+              zIndex: i,
+              duration: 0.3,
+              ease: 'power2.out'
             });
           }
         });

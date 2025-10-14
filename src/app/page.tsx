@@ -54,25 +54,25 @@ export default function Home() {
     <div className="min-h-screen bg-secondary p-0">
       <div className="relative min-h-screen bg-primary border border-orizon-secondary rounded-lg overflow-hidden m-2">
      
-        {/* Header with Reveal Animation */}
-        <div className={`transform transition-all duration-1000 ease-out ${
-          showSections 
-            ? 'translate-y-0 opacity-100' 
-            : '-translate-y-full opacity-0'
-        }`}>
-          <Header />
-        </div>
-
         {/* Connected Hero Section - Header + Waves + Separator + Banner + Separator as one unit */}
-        <div className="flex flex-col bg-primary relative overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
-          {/* Waves Section with Reveal Animation */}
-          <div className={`flex-shrink-0 relative border-b border-orizon-secondary transform transition-all duration-1200 ease-out ${
-            showSections 
-              ? 'translate-x-0 opacity-100 scale-100' 
+        <div className="flex flex-col bg-primary relative overflow-hidden" style={{ height: '100vh', minHeight: '100vh', maxHeight: '100vh' }}>
+          {/* Header with Reveal Animation */}
+          <div className={`flex-shrink-0 transform transition-all duration-1000 ease-out ${
+            showSections
+              ? 'translate-y-0 opacity-100'
+              : '-translate-y-full opacity-0'
+          }`}>
+            <Header />
+          </div>
+
+          {/* Waves Section with Reveal Animation - Takes remaining space */}
+          <div className={`flex-1 relative border-b border-orizon-secondary transform transition-all duration-1200 ease-out ${
+            showSections
+              ? 'translate-x-0 opacity-100 scale-100'
               : '-translate-x-full opacity-0 scale-95'
           }`}
-          style={{ 
-            height: '65%',
+          style={{
+            minHeight: 0,
             transitionDelay: showSections ? '200ms' : '0ms',
             borderBottomWidth: '1px'
           }}>
@@ -95,8 +95,8 @@ export default function Home() {
 
           {/* First Separator with Reveal Animation */}
           <div className={`flex-shrink-0 transform transition-all duration-1000 ease-out ${
-            showSections 
-              ? 'translate-y-0 opacity-100' 
+            showSections
+              ? 'translate-y-0 opacity-100'
               : 'translate-y-full opacity-0'
           }`}
           style={{
@@ -104,15 +104,14 @@ export default function Home() {
           }}>
             <Separator />
           </div>
-          
+
           {/* Banner Section with Reveal Animation */}
           <div className={`flex-shrink-0 bg-primary transform transition-all duration-1000 ease-out ${
-            showSections 
-              ? 'translate-y-0 opacity-100' 
+            showSections
+              ? 'translate-y-0 opacity-100'
               : 'translate-y-full opacity-0'
-          }`} 
-          style={{ 
-            height: '25%',
+          }`}
+          style={{
             transitionDelay: showSections ? '500ms' : '0ms'
           }}>
             <OrizonBanner />
@@ -120,8 +119,8 @@ export default function Home() {
 
           {/* Second Separator with Reveal Animation */}
           <div className={`flex-shrink-0 transform transition-all duration-1000 ease-out ${
-            showSections 
-              ? 'translate-y-0 opacity-100' 
+            showSections
+              ? 'translate-y-0 opacity-100'
               : 'translate-y-full opacity-0'
           }`}
           style={{
@@ -166,7 +165,7 @@ export default function Home() {
         style={{
           transitionDelay: showSections ? '1100ms' : '0ms'
         }}>
-          <Separator />
+          <Separator showBorderTop />
         </div>
         
 
@@ -180,7 +179,7 @@ export default function Home() {
         style={{
           transitionDelay: showSections ? '1100ms' : '0ms'
         }}>
-          <Separator />
+          <Separator showBorderTop />
         </div>
         {/* CtaSection with Reveal Animation */}
         <div className={`transform transition-all duration-1500 ease-out ${

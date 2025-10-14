@@ -7,7 +7,11 @@ const generateBinarySequence = (length: number) => {
   return Array.from({ length }, () => Math.floor(Math.random() * 2));
 };
 
-const Separator = () => {
+interface SeparatorProps {
+  showBorderTop?: boolean;
+}
+
+const Separator = ({ showBorderTop = false }: SeparatorProps) => {
   const [isInView, setIsInView] = useState(false);
   const separatorRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +55,9 @@ const Separator = () => {
   return (
     <div 
       ref={separatorRef}
-      className={`relative w-full h-6 flex items-center justify-between px-4 bg-orizon-primary  border-b border-orizon-secondary ${
+      className={`relative w-full h-6 flex items-center justify-between px-4 bg-orizon-primary border-b border-orizon-secondary ${
+        showBorderTop ? 'border-t border-orizon-secondary' : ''
+      } ${
         isInView ? 'is-in-view' : ''
       }`}
       style={{ fontFamily: 'monospace', fontSize: '8px', lineHeight: '16px', margin: 0, padding: '0 1rem' }}
