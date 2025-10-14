@@ -150,17 +150,20 @@ const WorkSectionWithPortal = () => {
 
     const letterPositions = letterPositionsRef.current;
     path.forEach((line: any, i) => {
-      line.letterElements = Array.from({ length: 8 }, () => {
-        const el = document.createElement('div');
-        el.className = 'letter';
-        el.textContent = ['W', 'O', 'R', 'K'][i];
-        textContainer.appendChild(el);
-        letterPositions.set(el, {
-          current: { x: 0, y: 0 },
-          target: { x: 0, y: 0 },
+        const letterCount = i === 0 ? 8 : 12;
+        line.letterElements = Array.from({ length: letterCount }, (_, idx) => {
+          const el = document.createElement('div');
+          el.className = 'letter';
+          el.textContent = ['W', 'O', 'R', 'K'][i];
+          el.style.marginRight = '0.5rem'; // Add gap between letters
+          if (idx === 0) el.style.marginLeft = '0.5rem'; // Add left gap for first letter
+          textContainer.appendChild(el);
+          letterPositions.set(el, {
+            current: { x: 0, y: 0 },
+            target: { x: 0, y: 0 },
+          });
+          return el;
         });
-        return el;
-      });
     });
 
     const lineSpeedMultipliers = [0.08, 1, 0.07, 0.09]; // W=0.08 (10x slower), O=1 (normal), R=0.07 (10x slower), K=0.09 (10x slower)
@@ -168,8 +171,8 @@ const WorkSectionWithPortal = () => {
       path.forEach((line: any, lineIndex) => {
         line.letterElements.forEach((element: any, i: number) => {
           const point = line.curve.getPoint(
-            (i / 7 + scrollProgress * lineSpeedMultipliers[lineIndex]) % 1
-          );
+              (i / (line.letterElements.length - 1) + scrollProgress * lineSpeedMultipliers[lineIndex]) % 1
+            );
           const vector = point.clone().project(lettersCamera);
           const positions = letterPositions.get(element);
           const sectionRect = section.getBoundingClientRect();

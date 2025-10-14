@@ -66,7 +66,7 @@ export default function Home() {
           </div>
 
           {/* Waves Section with Reveal Animation - Takes remaining space */}
-          <div className={`flex-1 relative border-b border-orizon-secondary transform transition-all duration-1200 ease-out ${
+          <div className={`flex-1  relative border-b border-orizon-secondary transform transition-all duration-1200 ease-out ${
             showSections
               ? 'translate-x-0 opacity-100 scale-100'
               : '-translate-x-full opacity-0 scale-95'
@@ -118,7 +118,7 @@ export default function Home() {
           </div>
 
           {/* Second Separator with Reveal Animation */}
-          <div className={`flex-shrink-0 transform transition-all duration-1000 ease-out ${
+          <div className={`flex-shrink-0 transform transition-all duration-1000 ease-out mb-3 ${
             showSections
               ? 'translate-y-0 opacity-100'
               : 'translate-y-full opacity-0'

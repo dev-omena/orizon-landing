@@ -41,6 +41,14 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
 
     if (cards.length === 0) return;
 
+    // Set initial state - all cards hidden until trigger starts
+    cards.forEach((card) => {
+      gsap.set(card, {
+        opacity: 0,
+        visibility: 'hidden',
+      });
+    });
+
     const scrollLength = cards.length * 120; // 120% per card
 
     let currentScrollTrigger: ScrollTrigger | null = null;
@@ -53,6 +61,32 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       pin: true,
       pinSpacing: true,
       scrub: 1,
+      onEnter: () => {
+        // Show cards stacked together when section is pinned
+        cards.forEach((card, i) => {
+          const stackOffset = i * 8;
+          const scaleVal = Math.max(0.85, 1 - (i * 0.03));
+
+          gsap.set(card, {
+            xPercent: -50,
+            yPercent: -50,
+            y: stackOffset,
+            opacity: 1,
+            visibility: 'visible',
+            scale: scaleVal,
+            zIndex: cards.length - i,
+          });
+        });
+      },
+      onLeaveBack: () => {
+        // Hide cards when scrolling back before section
+        cards.forEach((card) => {
+          gsap.set(card, {
+            opacity: 0,
+            visibility: 'hidden',
+          });
+        });
+      },
       onUpdate: (self) => {
         const progress = self.progress;
         const totalCards = cards.length;
@@ -72,7 +106,8 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           if (continuousIndex < i) {
             // Future cards - waiting below
             gsap.to(card, {
-              yPercent: 100,
+              xPercent: -50,
+              yPercent: 50,
               opacity: 1,
               scale: 0.9,
               zIndex: i,
@@ -81,10 +116,11 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             });
           } else if (continuousIndex >= i && continuousIndex < i + 1) {
             // Current card - animating in
-            const yPos = 100 * (1 - clampedProgress);
+            const yPos = 50 - (100 * clampedProgress);
             const scaleVal = 0.9 + (clampedProgress * 0.1);
 
             gsap.to(card, {
+              xPercent: -50,
               yPercent: yPos,
               opacity: 1,
               scale: scaleVal,
@@ -98,7 +134,8 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             const stackOffset = Math.min(stackDepth * 8, 40);
 
             gsap.to(card, {
-              yPercent: 0,
+              xPercent: -50,
+              yPercent: -50,
               y: -stackOffset,
               opacity: 1,
               scale: Math.max(0.85, 1 - (stackDepth * 0.03)),
@@ -127,44 +164,39 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         .scroll-stack-section {
           position: relative;
           width: 100%;
-          height: 100vh;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           overflow: hidden;
         }
         .scroll-stack-container {
           position: relative;
           width: 100%;
-          height: 100%;
-          padding: 10vh 1rem;
-        }
-        @media (min-width: 640px) {
-          .scroll-stack-container {
-            padding: 10vh 2rem;
-          }
-        }
-        @media (min-width: 768px) {
-          .scroll-stack-container {
-            padding: 10vh 5rem;
-          }
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .scroll-stack-card {
           position: absolute;
-          top: 10vh;
-          left: 1rem;
-          right: 1rem;
-          transform-origin: top center;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: calc(100% - 2rem);
+          max-width: 1200px;
+          transform-origin: center center;
           will-change: transform, opacity;
           backface-visibility: hidden;
         }
         @media (min-width: 640px) {
           .scroll-stack-card {
-            left: 2rem;
-            right: 2rem;
+            width: calc(100% - 4rem);
           }
         }
         @media (min-width: 768px) {
           .scroll-stack-card {
-            left: 5rem;
-            right: 5rem;
+            width: calc(100% - 10rem);
           }
         }
       `}</style>

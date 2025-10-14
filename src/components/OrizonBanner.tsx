@@ -195,7 +195,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
       `}</style>
        <div
          className={`relative w-full bg-orizon-primary h-full flex items-center justify-center overflow-hidden ${className}`}
-         style={{ borderBottom: '1px solid #f8e800', padding: 0 }}
+         style={{ borderBottom: '1px solid #f8e800' }}
        >
          <div className="flex items-center justify-center overflow-hidden w-full h-full" style={{ padding: 0, margin: 0 }}>
            <h1
