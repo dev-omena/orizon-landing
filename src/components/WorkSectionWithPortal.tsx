@@ -149,17 +149,26 @@ const WorkSectionWithPortal = () => {
     path.forEach((line) => lettersScene.add(line));
 
     const letterPositions = letterPositionsRef.current;
+    
+    // Calculate dynamic letter count based on screen width
+    const sectionRect = section.getBoundingClientRect();
+    const screenWidth = sectionRect.width;
+    const baseLetterCount = Math.floor(screenWidth / 120); // Approx 1 letter per 120px
+    const dynamicLetterCount = Math.max(6, Math.min(baseLetterCount, 20)); // Min 6, max 20
+    
     path.forEach((line: any, i) => {
-        const letterCount = i === 0 ? 8 : 12;
+        // W has slightly fewer letters to avoid crowding
+        const letterCount = i === 0 ? Math.max(6, dynamicLetterCount - 2) : dynamicLetterCount;
         line.letterElements = Array.from({ length: letterCount }, (_, idx) => {
           const el = document.createElement('div');
           el.className = 'letter';
           el.textContent = ['W', 'O', 'R', 'K'][i];
-          el.style.marginRight = '0.5rem'; // Add gap between letters
-          if (idx === 0) el.style.marginLeft = '0.5rem'; // Add left gap for first letter
+          el.style.marginRight = '1rem'; // Add gap between letters
+          el.style.marginBottom = '1rem'; // Add bottom gap to prevent vertical connection
+          if (idx === 0) el.style.marginLeft = '1rem'; // Add left gap for first letter
           textContainer.appendChild(el);
           letterPositions.set(el, {
-            current: { x: 0, y: 0 },
+            current: { x: 0, y: 0   },
             target: { x: 0, y: 0 },
           });
           return el;
@@ -438,7 +447,18 @@ const WorkSectionWithPortal = () => {
         #grid-canvas{ z-index:-1 }
         #letters-canvas{ z-index:1 }
         .text-container{ width:100%; height:100%; position:absolute; top:0; left:0; z-index:2; pointer-events:none; perspective:2500px; perspective-origin:center; opacity: 0; }
-        .letter{ position:absolute; font-family: 'Bigger', sans-serif; font-size:15rem; font-weight:bold; color:#272860; z-index:3; transform-origin:center; transform-style:preserve-3d; will-change:transform }
+        .letter{ 
+          position:absolute; 
+          font-family: 'Bigger', sans-serif; 
+          font-size: clamp(8rem, 12vw, 18rem); 
+          font-weight:bold; 
+          color:#272860; 
+          z-index:3; 
+          transform-origin:center; 
+          transform-style:preserve-3d; 
+          will-change:transform;
+          line-height: 1.2;
+        }
         .cards{
           position:relative;
           width:1200vw;

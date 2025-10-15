@@ -81,13 +81,13 @@ export default function Home() {
               backgroundColor="#272860"
               waveSpeedX={0.02}
               waveSpeedY={0.01}
-              waveAmpX={20}
-              waveAmpY={10}
+              waveAmpX={18}
+              waveAmpY={9}
               friction={0.8}
               tension={0.01}
-              maxCursorMove={90}
-              xGap={15}
-              yGap={45}
+              maxCursorMove={80}
+              xGap={18}
+              yGap={50}
 
 
             />
@@ -112,7 +112,8 @@ export default function Home() {
               : 'translate-y-full opacity-0'
           }`}
           style={{
-            transitionDelay: showSections ? '500ms' : '0ms'
+            transitionDelay: showSections ? '500ms' : '0ms',
+            minHeight: '200px'
           }}>
             <OrizonBanner />
           </div>

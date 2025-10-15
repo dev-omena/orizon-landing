@@ -195,13 +195,13 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
       `}</style>
        <div
          className={`relative w-full bg-orizon-primary h-full flex items-center justify-center overflow-hidden ${className}`}
-         style={{ borderBottom: '1px solid #f8e800' }}
+         style={{ borderBottom: '1px solid #f8e800', paddingTop: '3rem', paddingBottom: '3rem' }}
        >
          <div className="flex items-center justify-center overflow-hidden w-full h-full" style={{ padding: 0, margin: 0 }}>
            <h1
              ref={titleRef}
              className="s__title text-orizon-secondary"
-             style={{ margin: 0, padding: 0, display: 'flex', alignItems: 'center' }}
+             style={{ margin: 0, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
            >
             <span className="s__title__word js-word" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
               <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }} className="word">

@@ -41,19 +41,24 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
 
     if (cards.length === 0) return;
 
-    // Set initial state - all cards hidden until trigger starts
-    cards.forEach((card) => {
+    // Set initial state - all cards positioned below viewport (off-screen)
+    cards.forEach((card, i) => {
       gsap.set(card, {
-        opacity: 0,
-        visibility: 'hidden',
+        xPercent: -50,
+        yPercent: -50,
+        y: '150vh', // Start completely off-screen below using y offset
+        opacity: 1,
+        visibility: 'visible',
+        scale: 0.8,
+        zIndex: i,
       });
     });
 
-    const scrollLength = cards.length * 120; // 120% per card
+    const scrollLength = cards.length * 200; // 200% per card for more separation
 
     let currentScrollTrigger: ScrollTrigger | null = null;
 
-    // Create ScrollTrigger with pin (like WorkSectionWithPortal)
+    // Create ScrollTrigger with smooth pin animation
     currentScrollTrigger = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
@@ -61,87 +66,64 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       pin: true,
       pinSpacing: true,
       scrub: 1,
-      onEnter: () => {
-        // Show cards stacked together when section is pinned
-        cards.forEach((card, i) => {
-          const stackOffset = i * 8;
-          const scaleVal = Math.max(0.85, 1 - (i * 0.03));
-
-          gsap.set(card, {
-            xPercent: -50,
-            yPercent: -50,
-            y: stackOffset,
-            opacity: 1,
-            visibility: 'visible',
-            scale: scaleVal,
-            zIndex: cards.length - i,
-          });
-        });
-      },
-      onLeaveBack: () => {
-        // Hide cards when scrolling back before section
-        cards.forEach((card) => {
-          gsap.set(card, {
-            opacity: 0,
-            visibility: 'hidden',
-          });
-        });
-      },
+      anticipatePin: 1,
       onUpdate: (self) => {
         const progress = self.progress;
         const totalCards = cards.length;
 
-        // Continuous progress calculation (no floor)
-        const continuousIndex = progress * totalCards;
-
+        // Each card gets its own segment of the scroll
         cards.forEach((card, i) => {
-          // Calculate smooth transition progress for each card
+          // Calculate when this card should animate
           const cardStart = i / totalCards;
           const cardEnd = (i + 1) / totalCards;
           const cardProgress = (progress - cardStart) / (cardEnd - cardStart);
 
-          // Clamp cardProgress between 0 and 1
+          // Clamp between 0 and 1
           const clampedProgress = Math.max(0, Math.min(1, cardProgress));
 
-          if (continuousIndex < i) {
-            // Future cards - waiting below
+          if (progress < cardStart) {
+            // Card is waiting in queue below - completely off-screen
             gsap.to(card, {
               xPercent: -50,
-              yPercent: 50,
+              yPercent: -50,
+              y: '150vh',
               opacity: 1,
-              scale: 0.9,
+              scale: 0.8,
               zIndex: i,
-              duration: 0.3,
+              duration: 0.5,
               ease: 'power2.out'
             });
-          } else if (continuousIndex >= i && continuousIndex < i + 1) {
-            // Current card - animating in
-            const yPos = 50 - (100 * clampedProgress);
-            const scaleVal = 0.9 + (clampedProgress * 0.1);
-
-            gsap.to(card, {
-              xPercent: -50,
-              yPercent: yPos,
-              opacity: 1,
-              scale: scaleVal,
-              zIndex: 100 + i,
-              duration: 0.3,
-              ease: 'power2.out'
-            });
-          } else {
-            // Past cards - stacked at top
-            const stackDepth = Math.floor(continuousIndex) - i;
-            const stackOffset = Math.min(stackDepth * 8, 40);
+          } else if (progress >= cardStart && progress < cardEnd) {
+            // Card is currently animating - smooth movement from off-screen to center
+            const yOffset = 150 - (150 * clampedProgress); // From 150vh to 0
+            const scaleVal = 0.8 + (clampedProgress * 0.2); // Scale from 0.8 to 1.0
 
             gsap.to(card, {
               xPercent: -50,
               yPercent: -50,
-              y: -stackOffset,
+              y: `${yOffset}vh`,
               opacity: 1,
-              scale: Math.max(0.85, 1 - (stackDepth * 0.03)),
-              zIndex: i,
+              scale: scaleVal,
+              zIndex: 100 + i,
               duration: 0.3,
-              ease: 'power2.out'
+              ease: 'none',
+              overwrite: true
+            });
+          } else {
+            // Card has finished - stays at center with scale-based depth
+            const totalPassed = Math.floor(progress * totalCards) - i;
+            const stackScale = Math.max(0.7, 1 - (totalPassed * 0.06));
+
+            gsap.to(card, {
+              xPercent: -50,
+              yPercent: -50,
+              y: 0,
+              opacity: 1,
+              scale: stackScale,
+              zIndex: cards.length - totalPassed,
+              duration: 0.3,
+              ease: 'none',
+              overwrite: true
             });
           }
         });
@@ -169,14 +151,17 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           align-items: center;
           justify-content: center;
           overflow: hidden;
+          overflow-y: clip;
         }
         .scroll-stack-container {
           position: relative;
           width: 100%;
           height: 100vh;
+          min-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: hidden;
         }
         .scroll-stack-card {
           position: absolute;
@@ -184,19 +169,41 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           left: 50%;
           transform: translate(-50%, -50%);
           width: calc(100% - 2rem);
-          max-width: 1200px;
+          max-width: 1400px;
           transform-origin: center center;
           will-change: transform, opacity;
           backface-visibility: hidden;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
         @media (min-width: 640px) {
           .scroll-stack-card {
-            width: calc(100% - 4rem);
+            width: calc(100% - 3rem);
+            max-width: 1400px;
           }
         }
         @media (min-width: 768px) {
           .scroll-stack-card {
-            width: calc(100% - 10rem);
+            width: calc(100% - 6rem);
+            max-width: 1500px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .scroll-stack-card {
+            width: calc(100% - 8rem);
+            max-width: 1600px;
+          }
+        }
+        @media (min-width: 1280px) {
+          .scroll-stack-card {
+            width: calc(100% - 12rem);
+            max-width: 1800px;
+          }
+        }
+        @media (min-width: 1536px) {
+          .scroll-stack-card {
+            width: calc(100% - 16rem);
+            max-width: 2000px;
           }
         }
       `}</style>
