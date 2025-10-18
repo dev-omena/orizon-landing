@@ -163,9 +163,10 @@ const WorkSectionWithPortal = () => {
           const el = document.createElement('div');
           el.className = 'letter';
           el.textContent = ['W', 'O', 'R', 'K'][i];
-          el.style.marginRight = '1rem'; // Add gap between letters
-          el.style.marginBottom = '1rem'; // Add bottom gap to prevent vertical connection
-          if (idx === 0) el.style.marginLeft = '1rem'; // Add left gap for first letter
+          el.style.marginRight = '2rem'; // Increased gap to prevent horizontal connection
+          el.style.marginLeft = '2rem'; // Add gap on both sides
+          el.style.marginBottom = '2rem'; // Increased bottom gap to prevent vertical connection
+          el.style.marginTop = '2rem'; // Add top gap as well
           textContainer.appendChild(el);
           letterPositions.set(el, {
             current: { x: 0, y: 0   },

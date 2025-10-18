@@ -46,6 +46,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       gsap.set(card, {
         xPercent: -50,
         yPercent: -50,
+        x: 0,
         y: '150vh', // Start completely off-screen below using y offset
         opacity: 1,
         visibility: 'visible',
@@ -86,6 +87,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             gsap.to(card, {
               xPercent: -50,
               yPercent: -50,
+              x: 0,
               y: '150vh',
               opacity: 1,
               scale: 0.8,
@@ -101,6 +103,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             gsap.to(card, {
               xPercent: -50,
               yPercent: -50,
+              x: 0,
               y: `${yOffset}vh`,
               opacity: 1,
               scale: scaleVal,
@@ -117,6 +120,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             gsap.to(card, {
               xPercent: -50,
               yPercent: -50,
+              x: 0,
               y: 0,
               opacity: 1,
               scale: stackScale,
@@ -151,7 +155,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          overflow-y: clip;
         }
         .scroll-stack-container {
           position: relative;
@@ -175,6 +178,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           backface-visibility: hidden;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          margin: 0 auto;
         }
         @media (min-width: 640px) {
           .scroll-stack-card {
