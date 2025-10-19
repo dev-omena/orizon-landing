@@ -77,10 +77,12 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           // Calculate when this card should animate
           const cardStart = i / totalCards;
           const cardEnd = (i + 1) / totalCards;
-          const cardProgress = (progress - cardStart) / (cardEnd - cardStart);
+          const isFirst = i === 0;
+          // No shift; compute raw segment progress normally
+          const rawProgress = (progress - cardStart) / (cardEnd - cardStart);
 
           // Clamp between 0 and 1
-          const clampedProgress = Math.max(0, Math.min(1, cardProgress));
+          const clampedProgress = Math.max(0, Math.min(1, rawProgress));
 
           if (progress < cardStart) {
             // Card is waiting in queue below - completely off-screen
@@ -97,8 +99,13 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             });
           } else if (progress >= cardStart && progress < cardEnd) {
             // Card is currently animating - smooth movement from off-screen to center
-            const yOffset = 150 - (150 * clampedProgress); // From 150vh to 0
-            const scaleVal = 0.8 + (clampedProgress * 0.2); // Scale from 0.8 to 1.0
+            const startY = 150;
+            const speedFactor = isFirst ? 4.5 : 1; // accelerate first card within its segment (faster)
+            const effective = Math.max(0, Math.min(1, clampedProgress * speedFactor));
+            const yOffset = startY - (startY * effective); // From 150vh to 0
+            const baseScale = 0.8;
+            const scaleRange = 0.2;
+            const scaleVal = baseScale + (effective * scaleRange); // to 1.0
 
             gsap.to(card, {
               xPercent: -50,

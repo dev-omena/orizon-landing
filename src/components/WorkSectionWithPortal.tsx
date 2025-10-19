@@ -26,18 +26,12 @@ const WorkSectionWithPortal = () => {
   const animationFrameRef = useRef<number | null>(null);
   const letterPositionsRef = useRef(new Map());
   const currentXPositionRef = useRef(0);
-  const ovalRef = useRef<HTMLDivElement>(null);
-  const workTextRef = useRef<HTMLDivElement>(null);
-  const backgroundRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const section = sectionRef.current;
     const cardsContainer = cardsContainerRef.current;
     const textContainer = textContainerRef.current;
-    const oval = ovalRef.current;
-    const workText = workTextRef.current;
 
-    if (!section || !cardsContainer || !textContainer || !oval || !workText) return;
+    if (!section || !cardsContainer || !textContainer) return;
 
     const initialSectionRect = section.getBoundingClientRect();
     const moveDistance = initialSectionRect.width * 8; // Increased from 5 to 8 for more spread
@@ -262,135 +256,269 @@ const WorkSectionWithPortal = () => {
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    // Main ScrollTrigger - handles both portal and work section
+    // Entry/Exit Animation Timeline with Advanced Reveals
+    const entryTimeline = gsap.timeline({ paused: true });
+    const exitTimeline = gsap.timeline({ paused: true });
+
+    // Entry animation - Advanced reveal effects (slower, more graceful)
+    entryTimeline
+      // Background expands from center with circular reveal (dark blue with grid)
+      .fromTo(section, 
+        { 
+          backgroundColor: '#272860',
+          backgroundImage: `
+            linear-gradient(to right, rgba(248, 232, 0, 0.15) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(248, 232, 0, 0.15) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px',
+          backgroundPosition: 'center center',
+          clipPath: 'circle(0% at 50% 50%)'
+        },
+        { 
+          backgroundColor: '#f8e800',
+          backgroundImage: 'none',
+          clipPath: 'circle(150% at 50% 50%)',
+          duration: 2.4, 
+          ease: 'expo.out' 
+        }
+      )
+      // Grid reveals with wipe effect from left
+      .fromTo(gridCanvas,
+        { 
+          clipPath: 'inset(0 100% 0 0)',
+          opacity: 0
+        },
+        { 
+          clipPath: 'inset(0 0% 0 0)',
+          opacity: 1,
+          duration: 2, 
+          ease: 'power4.out' 
+        },
+        0.6
+      )
+      // Letters canvas reveals with diagonal swipe
+      .fromTo(lettersCanvasRef.current,
+        { 
+          clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
+          opacity: 0
+        },
+        { 
+          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+          opacity: 1,
+          duration: 2.2, 
+          ease: 'expo.out' 
+        },
+        1
+      )
+      // Text container zooms in with elastic bounce
+      .fromTo(textContainer,
+        { 
+          scale: 0.3,
+          rotationY: -90,
+          rotationX: 45,
+          z: -500,
+          opacity: 0
+        },
+        { 
+          scale: 1,
+          rotationY: 0,
+          rotationX: 0,
+          z: 0,
+          opacity: 1,
+          duration: 2.6, 
+          ease: 'back.out(1.7)' 
+        },
+        0.8
+      )
+      // Cards reveal with staggered 3D flip and slide
+      .fromTo(cardElementsRef.current,
+        { 
+          rotationY: -90,
+          x: -300,
+          z: -200,
+          opacity: 0,
+          scale: 0.7,
+          clipPath: 'inset(0 0 100% 0)'
+        },
+        { 
+          rotationY: 0,
+          x: 0,
+          z: 0,
+          opacity: 1,
+          scale: 1,
+          clipPath: 'inset(0 0 0% 0)',
+          duration: 2.4, 
+          ease: 'power4.out',
+          stagger: {
+            each: 0.18,
+            from: 'start',
+            ease: 'power2.out'
+          }
+        },
+        1.4
+      );
+
+    // Exit animation - Advanced exit effects (slower, more graceful)
+    exitTimeline
+      // Cards exit with 3D rotation and upward motion
+      .to(cardElementsRef.current,
+        { 
+          rotationX: -60,
+          rotationZ: 5,
+          y: -150,
+          z: -300,
+          opacity: 0,
+          scale: 0.8,
+          clipPath: 'inset(100% 0 0 0)',
+          duration: 2, 
+          ease: 'power3.in',
+          stagger: {
+            each: 0.15,
+            from: 'end',
+            ease: 'power2.in'
+          }
+        }
+      )
+      // Text container spirals out
+      .to(textContainer,
+        { 
+          scale: 0.4,
+          rotationY: 90,
+          rotationX: -45,
+          z: -400,
+          opacity: 0,
+          duration: 2, 
+          ease: 'power3.in' 
+        },
+        0.4
+      )
+      // Letters canvas wipes out to right
+      .to(lettersCanvasRef.current,
+        { 
+          clipPath: 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)',
+          opacity: 0,
+          duration: 1.6, 
+          ease: 'power3.in' 
+        },
+        0.6
+      )
+      // Grid wipes out to right
+      .to(gridCanvas,
+        { 
+          clipPath: 'inset(0 0% 0 100%)',
+          opacity: 0,
+          duration: 1.6, 
+          ease: 'power3.in' 
+        },
+        0.7
+      )
+      // Background collapses to center (back to dark blue with grid)
+      .to(section,
+        { 
+          backgroundColor: '#272860',
+          backgroundImage: `
+            linear-gradient(to right, rgba(248, 232, 0, 0.15) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(248, 232, 0, 0.15) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px',
+          backgroundPosition: 'center center',
+          clipPath: 'circle(0% at 50% 50%)',
+          duration: 1.6, 
+          ease: 'expo.in' 
+        },
+        0.8
+      );
+
+    // Main ScrollTrigger - handles work section scrolling with animated transitions
     currentScrollTrigger = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: '+=1200%', // Increased for slower, more controlled scroll
+      end: '+=1000%', // Increased for more scroll space
       pin: true,
       pinSpacing: true,
-      scrub: 3, // Much slower, more controlled scrubbing
+      scrub: 2, // Slower scrubbing for smoother control
       onUpdate: (self) => {
         const progress = self.progress;
         
-        // Opening: 0-10% - Portal opens (faster)
-        // Middle: 10-90% - Work section active (80% of scroll)
-        // Closing: 90-100% - Portal closes back to oval (faster)
+        // Transition phases (adjusted for slower animations):
+        // 0-0.12 (12%): Entry animation (more scroll space)
+        // 0.12-0.88 (76%): Full work section
+        // 0.88-1 (12%): Exit animation (more scroll space)
         
-        if (progress < 0.1) {
-          // OPENING - Show oval and grid fully visible, then expand
-          const openProgress = progress / 0.1; // 0 to 1
-          const ovalScale = 1 + (openProgress * 30);
-          gsap.set(section, {
-            backgroundColor: '#f8e800',
-            transition: 'background-color 0.6s ease-out'
-          });
-          gsap.set(backgroundRef.current, {
-            opacity: 1,
-            display: 'block'
-          });
-          gsap.set(oval, {
-            scale: ovalScale,
-            opacity: 1,
-            display: 'block'
-          });
-          gsap.set(workText, {
-            opacity: 1
-          });
-          gsap.set(textContainer, {
-            opacity: openProgress * 2,
-            scale: 0.5 + (openProgress * 0.5)
-          });
-          gsap.set(cardsContainer, {
-            opacity: openProgress > 0.3 ? (openProgress - 0.3) * 1.4 : 0,
-            visibility: openProgress > 0.3 ? 'visible' : 'hidden',
-            display: 'flex',
-            zIndex: 10
-          });
-          gsap.set(lettersCanvasRef.current, {
-            opacity: openProgress * 2
-          });
+        if (progress < 0.12) {
+          // Entry phase
+          const entryProgress = progress / 0.12;
+          entryTimeline.progress(entryProgress);
+          exitTimeline.progress(0);
           
-        } else if (progress >= 0.1 && progress <= 0.9) {
-          // MIDDLE - Work section fully visible, pure black background
-          const workProgress = (progress - 0.1) / 0.8;
-          
-          gsap.set(section, {
-            backgroundColor: '#f8e800',
-            transition: 'background-color 0.6s ease-out'
-          });
-          gsap.set(backgroundRef.current, {
-            opacity: 0,
-            display: 'none'
-          });
-          gsap.set(oval, {
-            scale: 1,
-            opacity: 0,
-            display: 'none'
-          });
-          gsap.set(workText, {
-            opacity: 0
-          });
-          gsap.set(textContainer, {
-            opacity: 1,
-            scale: 1,
-            visibility: 'visible'
-          });
-          gsap.set(cardsContainer, {
-            opacity: 1,
-            visibility: 'visible',
-            display: 'flex',
-            zIndex: 10
-          });
-          gsap.set(lettersCanvasRef.current, {
-            opacity: 1,
-            visibility: 'visible'
-          });
-          
+          // Calculate work progress starts gently
+          const workProgress = Math.max(0, (progress - 0.06) / 0.06) * 0.1;
           updateTargetPositions(workProgress);
-          textContainer.classList.add('expanded');
+          
+        } else if (progress > 0.88) {
+          // Exit phase
+          const exitProgress = (progress - 0.88) / 0.12;
+          entryTimeline.progress(1);
+          exitTimeline.progress(exitProgress);
+          
+          // Keep letters animating until the end
+          const workProgress = 0.9 + (exitProgress * 0.1);
+          updateTargetPositions(workProgress);
           
         } else {
-          // CLOSING - Shrink back to oval (faster closing)
-          const closeProgress = (progress - 0.9) / 0.1; // 0 to 1
-          const ovalScale = 30 - (closeProgress * 29); // 30 to 1
+          // Active phase - full work section
+          entryTimeline.progress(1);
+          exitTimeline.progress(0);
           
-          gsap.set(section, {
-            backgroundColor: closeProgress > 0.4 ? '#f8e800' : '#f8e800',
-            transition: 'background-color 0.6s ease-in-out'
-          });
-          // CLOSING - Fade in oval and grid, zoom out
-          gsap.set(backgroundRef.current, {
-            opacity: 1,
-            display: 'block'
-          });
-          gsap.set(oval, {
-            scale: ovalScale,
-            opacity: 1,
-            display: 'block'
-          });
-          gsap.set(workText, {
-            opacity: 1
-          });
-          gsap.set(textContainer, {
-            opacity: 1 - (closeProgress * 2.5),
-            scale: 1 - (closeProgress * 0.5)
-          });
-          gsap.set(cardsContainer, {
-            opacity: closeProgress < 0.4 ? 1 - (closeProgress * 2.5) : 0
-          });
-          gsap.set(lettersCanvasRef.current, {
-            opacity: 1 - (closeProgress * 2.5)
-          });
+          // Calculate work progress for letter animation
+          const workProgress = (progress - 0.12) / 0.76;
+          updateTargetPositions(workProgress);
         }
+        
+        textContainer.classList.add('expanded');
       },
     });
 
-    // Initialize
+    // Initialize with entry state
     textContainer.classList.add('expanded');
     drawGrid(0);
     animate();
     updateTargetPositions(0);
+    
+    // Set initial states before animations with advanced positioning
+    gsap.set(section, { 
+      backgroundColor: '#272860',
+      backgroundImage: `
+        linear-gradient(to right, rgba(248, 232, 0, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(248, 232, 0, 0.15) 1px, transparent 1px)
+      `,
+      backgroundSize: '60px 60px',
+      backgroundPosition: 'center center',
+      clipPath: 'circle(0% at 50% 50%)'
+    });
+    gsap.set(gridCanvas, { 
+      clipPath: 'inset(0 100% 0 0)',
+      opacity: 0
+    });
+    gsap.set(lettersCanvasRef.current, { 
+      clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
+      opacity: 0
+    });
+    gsap.set(textContainer, { 
+      scale: 0.3,
+      rotationY: -90,
+      rotationX: 45,
+      z: -500,
+      opacity: 0
+    });
+    gsap.set(cardElementsRef.current, { 
+      rotationY: -90,
+      x: -300,
+      z: -200,
+      opacity: 0,
+      scale: 0.7,
+      clipPath: 'inset(0 0 100% 0)'
+    });
 
     const handleResize = () => {
       resizeGridCanvas();
@@ -414,6 +542,10 @@ const WorkSectionWithPortal = () => {
       if (currentScrollTrigger) {
         currentScrollTrigger.kill();
       }
+      
+      // Kill timelines
+      entryTimeline.kill();
+      exitTimeline.kill();
 
       letterPositions.forEach((_, element) => {
         if (element.parentNode) {
@@ -443,11 +575,13 @@ const WorkSectionWithPortal = () => {
           z-index: 1;
           opacity: 1;
           visibility: visible;
+          perspective: 2000px;
+          perspective-origin: center center;
         }
         .work-portal canvas { position: absolute; top:0; left:0; }
         #grid-canvas{ z-index:-1 }
         #letters-canvas{ z-index:1 }
-        .text-container{ width:100%; height:100%; position:absolute; top:0; left:0; z-index:2; pointer-events:none; perspective:2500px; perspective-origin:center; opacity: 0; }
+        .text-container{ width:100%; height:100%; position:absolute; top:0; left:0; z-index:2; pointer-events:none; perspective:2500px; perspective-origin:center; opacity: 1; transform-style: preserve-3d; }
         .letter{ 
           position:absolute; 
           font-family: 'Bigger', sans-serif; 
@@ -472,7 +606,7 @@ const WorkSectionWithPortal = () => {
           flex-wrap:wrap;
           align-content:space-around;
           z-index:10;
-          opacity: 0;
+          opacity: 1;
           will-change: opacity, transform;
           perspective: 2000px;
           perspective-origin: center center;
@@ -501,83 +635,19 @@ const WorkSectionWithPortal = () => {
         .card:nth-child(5){ top:5%; left:440vw }
         .card:nth-child(6){ top:50%; left:520vw }
         .card:nth-child(7){ top:5%; left:600vw }
-        .oval-container{ position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; }
-        .oval{ 
-          width:min(200px, 18vw); 
-          height:calc(100vh - 240px); 
-          max-height:calc(100vh - 240px);
-          min-height:400px;
-          background-color:#f8e800; 
-          border-radius:calc(min(200px, 18vw) / 2); 
-          display:flex; 
-          align-items:center; 
-          justify-content:center; 
-          box-shadow:0 0 0 10px #272860, 0 0 0 16px #f8e800; 
-          border:none; 
-          transform-origin:center center; 
-          background-image: radial-gradient(circle at center, #272860 2px, transparent 2px); 
-          background-size: 20px 20px; 
-          position: relative;
-        }
-        .work-text{ 
-          display:flex; 
-          flex-direction:column; 
-          align-items:center; 
-          justify-content:center;
-          gap:0px; 
-          height:100%;
-          width:100%;
-        }
-        .work-letter{ 
-          font-size:80px; 
-          line-height:0.8; 
-          color:#272860; 
-          font-weight:900; 
-          font-family:'Bigger', sans-serif; 
-          text-align:center;
-        }
       `}</style>
 
-      {/* Initial Dark Blue Background with Square Grid */}
-      <div 
-        ref={backgroundRef}
-        className="initial-background"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: '#272860',
-          backgroundImage: `
-            linear-gradient(to right, rgba(248, 232, 0, 0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(248, 232, 0, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '120px 120px',
-          backgroundPosition: 'center center',
-          zIndex: 0,
-          opacity: 1
-        }}
-      />
-      
       <canvas id="grid-canvas" ref={gridCanvasRef}></canvas>
       <canvas id="letters-canvas" ref={lettersCanvasRef}></canvas>
-      
-      {/* Portal Oval */}
-      <div className="oval-container" ref={ovalRef}>
-        <div className="oval">
-          <div className="work-text" ref={workTextRef}>
-            <span className="work-letter">W</span>
-            <span className="work-letter">O</span>
-            <span className="work-letter">R</span>
-            <span className="work-letter">K</span>
-          </div>
-        </div>
-      </div>
       
       <div className="text-container" ref={textContainerRef}></div>
       <div className="cards" ref={cardsContainerRef}>
         {cards.map((card, index) => {
-          // Calculate size based on multiplier (width only). Height will be set by CSS aspect-ratio.
-          const baseWidth = 36; // vw (increased base width to make cards bigger)
-          const width = baseWidth * card.sizeMultiplier;
+          // Calculate size based on multiplier, but clamp only the largest cards to prevent overflow
+          const baseWidth = 36; // vw (original base width for visual variety)
+          const maxWidthVW = 38; // maximum allowed width in vw for any card
+          let widthVW = baseWidth * card.sizeMultiplier;
+          if (widthVW > maxWidthVW) widthVW = maxWidthVW;
 
           return (
             <div
@@ -587,7 +657,9 @@ const WorkSectionWithPortal = () => {
                 if (el) cardElementsRef.current[index] = el;
               }}
               style={{
-                width: `${width}vw`
+                width: `${widthVW}vw`,
+                maxWidth: '600px', // fallback for very large screens
+                minWidth: '220px', // fallback for very small screens
               }}
             >
               <div className="card-img">
