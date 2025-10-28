@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TextPressure from './TextPressure';
 import './InteractiveCTA.css';
 
@@ -7,6 +7,70 @@ const rock = "ROCK";
 
 export default function InteractiveCTA() {
   const [hovered, setHovered] = useState(false);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const cursorRef = useRef({ x: 0, y: 0 });
+  const letsSpansRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const rockSpansRef = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      cursorRef.current.x = e.clientX;
+      cursorRef.current.y = e.clientY;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    if (!hovered) return;
+
+    let rafId: number;
+    const animate = () => {
+      mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
+      mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
+
+      const maxDist = 240; // Half of circle width
+
+      const animateSpans = (spans: (HTMLSpanElement | null)[]) => {
+        spans.forEach(span => {
+          if (!span) return;
+
+          const rect = span.getBoundingClientRect();
+          const charCenter = {
+            x: rect.x + rect.width / 2,
+            y: rect.y + rect.height / 2
+          };
+
+          const d = dist(mouseRef.current, charCenter);
+
+          const getAttr = (distance: number, minVal: number, maxVal: number) => {
+            const val = maxVal - Math.abs((maxVal * distance) / maxDist);
+            return Math.max(minVal, val + minVal);
+          };
+
+          const wdth = Math.floor(getAttr(d, 50, 300));
+          const wght = Math.floor(getAttr(d, 400, 900));
+
+          span.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
+        });
+      };
+
+      animateSpans(letsSpansRef.current);
+      animateSpans(rockSpansRef.current);
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(rafId);
+  }, [hovered]);
 
   return (
     <div className="relative flex items-center justify-center h-full">
@@ -48,31 +112,98 @@ export default function InteractiveCTA() {
           )}
 
 
-          {/* Two-Line Layout: LET'S and ROCK visible on hover, bobbing together */}
+          {/* Circular Text Layout - LET'S on top arc, ROCK on bottom arc */}
           {hovered && (
-            <div
-              className="absolute top-1/2 left-1/2 font-black text-center uppercase flex flex-col items-center justify-center"
-              style={{
-                transform: 'translate(-50%, -50%)',
-                zIndex: 10,
-                pointerEvents: 'none',
-                color: '#272860',
-                width: '88%',
-                maxWidth: '380px',
-                height: '96%',
-                maxHeight: '440px',
-                overflow: 'hidden',
-              }}
-            >
-              {/* Top Line - LET'S */}
-              <div className="float-slow flex justify-center items-center w-full" style={{gap: '0.001em', minHeight: '2.4rem', paddingTop: '2px', paddingBottom: '2px', overflow: 'hidden'}}>
-                <TextPressure text={lets} textColor="#272860" flex={true} minFontSize={7} />
+            <>
+              <style>{`
+                @font-face {
+                  font-family: 'Compressa VF';
+                  src: url('https://res.cloudinary.com/dr6lvwubh/raw/upload/v1529908256/CompressaPRO-GX.woff2');
+                  font-style: normal;
+                }
+              `}</style>
+              <div
+                className="absolute inset-0 uppercase float-slow"
+                style={{
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                  color: '#272860',
+                  fontFamily: 'Compressa VF, sans-serif',
+                }}
+              >
+                {/* LET'S on top arc */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', left: 0, top: 0 }}>
+                  {lets.split('').map((char, index) => {
+                    const totalChars = lets.length;
+                    const radius = 200; // Distance from center
+                    const angleSpread = 60; // Total degrees
+                    const angleStep = angleSpread / (totalChars - 1);
+                    const startAngle = -90 - (angleSpread / 2); // Start angle
+                    const angle = startAngle + (index * angleStep);
+                    const radian = (angle * Math.PI) / 180;
+                    const x = 240 + Math.cos(radian) * radius; // 240 is center of 480px
+                    const y = 240 + Math.sin(radian) * radius;
+
+                    return (
+                      <span
+                        key={`lets-${index}`}
+                        ref={el => {
+                          letsSpansRef.current[index] = el;
+                        }}
+                        style={{
+                          position: 'absolute',
+                          left: `${x}px`,
+                          top: `${y}px`,
+                          transform: `translate(-50%, -50%) rotate(${angle + 90}deg)`,
+                          fontSize: '4.5rem',
+                          fontWeight: 400,
+                          display: 'inline-block',
+                          fontVariationSettings: "'wght' 400, 'wdth' 100",
+                        }}
+                      >
+                        {char}
+                      </span>
+                    );
+                  })}
+                </div>
+
+                {/* ROCK on bottom arc */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', left: 0, top: 0 }}>
+                  {rock.split('').reverse().map((char, index) => {
+                    const totalChars = rock.length;
+                    const radius = 200; // Distance from center
+                    const angleSpread = 50; // Total degrees
+                    const angleStep = angleSpread / (totalChars - 1);
+                    const startAngle = 90 - (angleSpread / 2); // Start from left side
+                    const angle = startAngle + (index * angleStep); // Add to go right
+                    const radian = (angle * Math.PI) / 180;
+                    const x = 240 + Math.cos(radian) * radius; // 240 is center of 480px
+                    const y = 240 + Math.sin(radian) * radius;
+
+                    return (
+                      <span
+                        key={`rock-${index}`}
+                        ref={el => {
+                          rockSpansRef.current[index] = el;
+                        }}
+                        style={{
+                          position: 'absolute',
+                          left: `${x}px`,
+                          top: `${y}px`,
+                          transform: `translate(-50%, -50%) rotate(${angle - 90}deg)`,
+                          fontSize: '4.5rem',
+                          fontWeight: 400,
+                          display: 'inline-block',
+                          fontVariationSettings: "'wght' 400, 'wdth' 100",
+                        }}
+                      >
+                        {char}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
-              {/* Bottom Line - ROCK */}
-              <div className="float-slow flex justify-center items-center w-full" style={{gap: '0.001em', minHeight: '2.4rem', paddingTop: '2px', paddingBottom: '2px', overflow: 'hidden'}}>
-                <TextPressure text={rock} textColor="#272860" flex={true} minFontSize={7} />
-              </div>
-            </div>
+            </>
           )}
         </div>
       </div>

@@ -220,42 +220,16 @@ const WorkSectionWithPortal = () => {
         x: currentXPositionRef.current,
       });
 
-      // Apply cylindrical angle effect to individual cards
+      // No rotation or 3D effects - keep cards flat
       const cardElements = cardElementsRef.current;
-      const sectionRect = section.getBoundingClientRect();
-      const viewportCenter = sectionRect.width / 2;
-
-      cardElements.forEach((card, index) => {
+      cardElements.forEach((card) => {
         if (!card) return;
 
-        const cardRect = card.getBoundingClientRect();
-        const cardCenterX = cardRect.left + cardRect.width / 2;
-
-        // Calculate distance from viewport center
-        const distanceFromCenter = cardCenterX - viewportCenter;
-        
-        // Normalize distance (-1 to 1, where 0 is center)
-        const normalizedDistance = distanceFromCenter / (sectionRect.width / 2);
-
-        // Reverse cylindrical rotation - cards angle inward
-        // Cards on right angle towards left, cards on left angle towards right
-        const maxAngle = 15; // Reduced rotation - subtle angle only
-        const angleY = -normalizedDistance * maxAngle; // Reversed with negative
-
-        // Inward cylindrical depth effect - center cards come forward
-        // Cards at edges are pushed back, center cards pop forward
-        const maxDepth = 200;
-        const zTranslate = (1 - Math.abs(normalizedDistance)) * maxDepth - maxDepth;
-
-        // Scale effect - cards closer to center are slightly larger
-        const scaleEffect = 1 - (Math.abs(normalizedDistance) * 0.15);
-        const finalScale = Math.max(0.85, Math.min(1, scaleEffect));
-
-        // Apply 3D transforms with cylindrical effect
+        // Reset all transforms to flat, no rotation
         gsap.set(card, {
-          rotationY: angleY,
-          z: zTranslate,
-          scale: finalScale,
+          rotationY: 0,
+          z: 0,
+          scale: 1,
           transformOrigin: 'center center'
         });
       });
@@ -284,60 +258,42 @@ const WorkSectionWithPortal = () => {
     currentScrollTrigger = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: '+=800%',
-  pin: true,
-  // Use fixed pinning so the section truly overlays the viewport and hides siblings
-  pinType: 'fixed',
+      end: '+=500%',
+      pin: true,
+      pinType: 'fixed',
       pinSpacing: true,
       scrub: 1.5,
       onUpdate: (self) => {
         const progress = self.progress;
-        if (progress < 0.1) {
-          const openProgress = progress / 0.1;
-          const ovalScale = 1 + (openProgress * 30);
-            // Keep section dark blue background throughout
-            gsap.set(section, { backgroundColor: '#272860', transition: 'background-color 0.3s ease-out' });
-            gsap.set(backgroundRef.current, { opacity: 1, display: 'block' });
-            gsap.set(oval, { scale: ovalScale, opacity: 1 });
-          gsap.set(workText, { opacity: 1 - (openProgress * 3) });
-          gsap.set(textContainer, { opacity: openProgress * 2, scale: 0.5 + (openProgress * 0.5) });
-          gsap.set(cardsContainer, { opacity: openProgress > 0.6 ? (openProgress - 0.6) * 2.5 : 0, visibility: openProgress > 0.6 ? 'visible' : 'hidden', display: 'flex', zIndex: 10 });
-          gsap.set(lettersCanvasRef.current, { opacity: openProgress * 2 });
-          // Reveal and animate the dot grid
-          gsap.set(gridCanvasRef.current, { opacity: openProgress * 2, display: 'block', visibility: 'visible' });
-          drawGrid(openProgress);
-        } else if (progress >= 0.1 && progress <= 0.9) {
-          const workProgress = (progress - 0.1) / 0.8;
-            gsap.set(section, { backgroundColor: '#272860', transition: 'background-color 0.6s ease-out' });
-            gsap.set(backgroundRef.current, { opacity: 1, display: 'block' });
-          gsap.set(oval, { scale: 1, opacity: 0, display: 'none' });
-          gsap.set(workText, { opacity: 0 });
-          gsap.set(textContainer, { opacity: 1, scale: 1, visibility: 'visible' });
-          gsap.set(cardsContainer, { opacity: 1, visibility: 'visible', display: 'flex', zIndex: 10 });
-          gsap.set(lettersCanvasRef.current, { opacity: 1, visibility: 'visible' });
-          gsap.set(gridCanvasRef.current, { opacity: 1, visibility: 'visible', display: 'block' });
-          updateTargetPositions(workProgress);
-          textContainer.classList.add('expanded');
-          drawGrid(workProgress);
-        } else {
-          const closeProgress = (progress - 0.9) / 0.1;
-          const ovalScale = 30 - (closeProgress * 29);
-            gsap.set(section, { backgroundColor: '#272860', transition: 'background-color 0.6s ease-in-out' });
-            gsap.set(backgroundRef.current, { opacity: 1, display: 'block' });
-          gsap.set(oval, { scale: ovalScale, opacity: closeProgress * 2, display: 'block' });
-          gsap.set(workText, { opacity: closeProgress * 2.5 });
-          gsap.set(textContainer, { opacity: 1 - (closeProgress * 2.5), scale: 1 - (closeProgress * 0.5) });
-          gsap.set(cardsContainer, { opacity: closeProgress < 0.4 ? 1 - (closeProgress * 2.5) : 0 });
-          gsap.set(lettersCanvasRef.current, { opacity: 1 - (closeProgress * 2.5) });
-          gsap.set(gridCanvasRef.current, { opacity: 1 - (closeProgress * 2.5) });
-          drawGrid(1 - closeProgress);
-        }
+
+        // Keep section dark blue background throughout
+        gsap.set(section, { backgroundColor: '#272860' });
+        gsap.set(backgroundRef.current, { opacity: 1, display: 'block' });
+
+        // Hide oval and work text completely
+        gsap.set(oval, { opacity: 0, display: 'none' });
+        gsap.set(workText, { opacity: 0 });
+
+        // Keep everything visible and at full opacity
+        gsap.set(textContainer, { opacity: 1, scale: 1, visibility: 'visible' });
+        gsap.set(cardsContainer, { opacity: 1, visibility: 'visible', display: 'flex', zIndex: 10 });
+        gsap.set(lettersCanvasRef.current, { opacity: 1, visibility: 'visible' });
+        gsap.set(gridCanvasRef.current, { opacity: 1, visibility: 'visible', display: 'block' });
+
+        // Update animations based on scroll progress
+        updateTargetPositions(progress);
+        textContainer.classList.add('expanded');
+        drawGrid(progress);
       },
       onEnter: () => {
-        // Ensure dark blue background is set immediately when section pins
+        // Set initial state
         gsap.set(backgroundRef.current, { opacity: 1, display: 'block' });
         gsap.set(gridCanvasRef.current, { display: 'block', visibility: 'visible', opacity: 1 });
         gsap.set(sectionRef.current, { backgroundColor: '#272860' });
+        gsap.set(oval, { opacity: 0, display: 'none' });
+        gsap.set(workText, { opacity: 0 });
+        gsap.set(textContainer, { opacity: 1, scale: 1, visibility: 'visible' });
+        gsap.set(cardsContainer, { opacity: 1, visibility: 'visible', display: 'flex', zIndex: 10 });
         startAnimation();
       },
       onLeave: () => {
@@ -429,10 +385,8 @@ color:#f8e800;
           flex-wrap:wrap;
           align-content:space-around;
           z-index:10;
-          opacity: 0;
-          will-change: opacity, transform;
-          perspective: 2000px;
-          perspective-origin: center center;
+          opacity: 1;
+          will-change: transform;
         }
         .card{
           padding:8px;
@@ -442,9 +396,7 @@ color:#f8e800;
           flex-direction:column;
           gap:4px;
           position:absolute;
-          transform-style: preserve-3d;
           will-change: transform;
-          transition: transform 0.3s ease-out;
           box-sizing: border-box;
         }
         .card-img{ 
