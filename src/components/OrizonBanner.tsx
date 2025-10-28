@@ -119,7 +119,7 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
           style={{
             position: 'relative',
             display: 'inline-block',
-            overflow: 'visible',
+            overflow: 'hidden',
           }}
         >
           <span 
@@ -181,23 +181,23 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
            cursor: default;
            font-size: clamp(4rem, 12vw, 20rem);
            font-weight: 700;
-           line-height: 0.75;
+           line-height: 0.85;
            font-family: var(--font-family-bigger);
            text-transform: uppercase;
            padding: 0;
            flex-wrap: nowrap;
            justify-content: center;
            white-space: nowrap;
-           overflow: visible;
+           overflow: hidden;
            width: 100%;
            max-width: 100%;
          }
       `}</style>
        <div
-         className={`relative w-full bg-orizon-primary h-full flex items-center justify-center overflow-visible ${className}`}
+         className={`relative w-full bg-orizon-primary h-full flex items-center justify-center overflow-hidden ${className}`}
          style={{ borderBottom: '1px solid #f8e800', paddingTop: '3rem', paddingBottom: '3rem' }}
        >
-         <div className="flex items-center justify-center overflow-visible w-full h-full" style={{ padding: 0, margin: 0 }}>
+         <div className="flex items-center justify-center overflow-hidden w-full h-full" style={{ padding: 0, margin: 0 }}>
            <h1
              ref={titleRef}
              className="s__title text-orizon-secondary"
