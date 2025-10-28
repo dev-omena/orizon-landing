@@ -113,13 +113,13 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
       };
 
       return (
-        <div 
+        <div
           key={globalIndex}
           className={`char char--${letter.toLowerCase()} ${randomDirection}`}
-          style={{ 
-            position: 'relative', 
+          style={{
+            position: 'relative',
             display: 'inline-block',
-            overflow: 'hidden',
+            overflow: 'visible',
           }}
         >
           <span 
@@ -188,16 +188,16 @@ export default function OrizonBanner({ className = '' }: OrizonBannerProps) {
            flex-wrap: nowrap;
            justify-content: center;
            white-space: nowrap;
-           overflow: hidden;
+           overflow: visible;
            width: 100%;
            max-width: 100%;
          }
       `}</style>
        <div
-         className={`relative w-full bg-orizon-primary h-full flex items-center justify-center overflow-hidden ${className}`}
+         className={`relative w-full bg-orizon-primary h-full flex items-center justify-center overflow-visible ${className}`}
          style={{ borderBottom: '1px solid #f8e800', paddingTop: '3rem', paddingBottom: '3rem' }}
        >
-         <div className="flex items-center justify-center overflow-hidden w-full h-full" style={{ padding: 0, margin: 0 }}>
+         <div className="flex items-center justify-center overflow-visible w-full h-full" style={{ padding: 0, margin: 0 }}>
            <h1
              ref={titleRef}
              className="s__title text-orizon-secondary"

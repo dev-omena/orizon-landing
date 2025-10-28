@@ -135,7 +135,7 @@ export default function InteractiveCTA() {
                 <div style={{ position: 'absolute', width: '100%', height: '100%', left: 0, top: 0 }}>
                   {lets.split('').map((char, index) => {
                     const totalChars = lets.length;
-                    const radius = 200; // Distance from center
+                    const radius = 185; // Distance from center (reduced for padding)
                     const angleSpread = 60; // Total degrees
                     const angleStep = angleSpread / (totalChars - 1);
                     const startAngle = -90 - (angleSpread / 2); // Start angle
@@ -171,7 +171,7 @@ export default function InteractiveCTA() {
                 <div style={{ position: 'absolute', width: '100%', height: '100%', left: 0, top: 0 }}>
                   {rock.split('').reverse().map((char, index) => {
                     const totalChars = rock.length;
-                    const radius = 200; // Distance from center
+                    const radius = 185; // Distance from center (same as LET'S for equal spacing)
                     const angleSpread = 50; // Total degrees
                     const angleStep = angleSpread / (totalChars - 1);
                     const startAngle = 90 - (angleSpread / 2); // Start from left side
