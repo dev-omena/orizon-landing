@@ -18,6 +18,9 @@ const WorkSectionWithPortal = () => {
     { video: '/8.mp4', title: 'Neon City', number: '123456', sizeMultiplier: 0.7 },
     { video: '/9.mp4', title: 'Crystal Wave', number: '789012', sizeMultiplier: 1.5 },
     { video: '/10.mp4', title: 'Solar Drift', number: '345678', sizeMultiplier: 0.85 },
+    { video: '/11.mp4', title: 'Lunar Path', number: '901234', sizeMultiplier: 1.25 },
+    { video: '/12.mp4', title: 'Aqua Flow', number: '567890', sizeMultiplier: 0.95 },
+    { video: '/13.mp4', title: 'Thunder Peak', number: '234567', sizeMultiplier: 1.35 },
   ];
 
   const sectionRef = useRef<HTMLElement>(null);
