@@ -180,6 +180,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           transform: translate(-50%, -50%);
           width: calc(100% - 2rem);
           max-width: 1400px;
+          height: var(--card-h, 80vh); /* unify card height across items */
           transform-origin: center center;
           will-change: transform, opacity;
           backface-visibility: hidden;
@@ -187,34 +188,54 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
           -moz-osx-font-smoothing: grayscale;
           margin: 0 auto;
         }
+        .scroll-stack-card .content-root {
+          min-height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+        @media (max-width: 640px) {
+          .scroll-stack-card {
+            width: calc(100% - 1rem); /* a bit more width on small screens */
+            max-width: none;
+            border-width: 2px !important; /* override heavy borders from utilities */
+            border-radius: 1rem !important;
+            --card-h: calc(100vh - 1rem); /* fixed height for consistency */
+          }
+          .scroll-stack-card .content-root { overflow: auto; -webkit-overflow-scrolling: touch; }
+        }
         @media (min-width: 640px) {
           .scroll-stack-card {
             width: calc(100% - 3rem);
             max-width: 1400px;
+            --card-h: calc(100vh - 4rem);
           }
         }
         @media (min-width: 768px) {
           .scroll-stack-card {
             width: calc(100% - 6rem);
             max-width: 1500px;
+            --card-h: calc(100vh - 6rem);
           }
         }
         @media (min-width: 1024px) {
           .scroll-stack-card {
             width: calc(100% - 8rem);
             max-width: 1600px;
+            --card-h: calc(100vh - 8rem);
           }
         }
         @media (min-width: 1280px) {
           .scroll-stack-card {
             width: calc(100% - 12rem);
             max-width: 1800px;
+            --card-h: calc(100vh - 10rem);
           }
         }
         @media (min-width: 1536px) {
           .scroll-stack-card {
             width: calc(100% - 16rem);
             max-width: 2000px;
+            --card-h: calc(100vh - 12rem);
           }
         }
       `}</style>

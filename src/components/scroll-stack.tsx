@@ -169,39 +169,41 @@ const ScrollStackServices = () => {
         return (
           <ScrollStackItem
             key={service.id}
-            itemClassName="bg-orizon-secondary border-4 border-orizon-primary rounded-[2rem] shadow-xl text-orizon-primary px-0 py-0"
+            itemClassName="bg-orizon-secondary border-2 sm:border-4 border-orizon-primary rounded-xl sm:rounded-2xl lg:rounded-[2rem] shadow-xl text-orizon-primary px-0 py-0"
           >
-            <div className="flex flex-col gap-4 p-8 sm:p-12">
-              <div className="flex items-center gap-4 mb-2">
-                <div className="w-14 h-14 bg-orizon-primary rounded-2xl flex items-center justify-center shadow-lg animate-float">
-                  <Icon className="w-8 h-8 text-orizon-secondary" strokeWidth={2.5} />
+            <div className="content-root flex flex-col gap-3 sm:gap-4 p-3 sm:p-6 md:p-8 lg:p-12">
+              <div className="flex items-center gap-3 sm:gap-4 mb-2">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-orizon-primary rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
+                  <div className="animate-float">
+                    <Icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-orizon-secondary" strokeWidth={2.5} />
+                  </div>
                 </div>
-                <div className="text-5xl font-black text-orizon-primary/20 italic">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-black text-orizon-primary/20 italic">
                   {String(service.id).padStart(2, '0')}
                 </div>
               </div>
-              <h2 className="text-4xl sm:text-5xl font-black text-orizon-primary mb-2 tracking-tight uppercase italic drop-shadow-lg">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-orizon-primary mb-1 sm:mb-2 tracking-tight uppercase italic drop-shadow-lg">
                 {service.title}
               </h2>
-              <p className="text-lg sm:text-xl font-bold text-orizon-primary mb-2">
+              <p className="text-base sm:text-lg md:text-xl font-bold text-orizon-primary mb-1 sm:mb-2">
                 {service.subtitle}
               </p>
-              <p className="text-base sm:text-lg text-orizon-primary/80 mb-4 leading-relaxed">
+              <p className="text-sm sm:text-base md:text-lg text-orizon-primary/80 mb-3 sm:mb-4 leading-relaxed">
                 {service.description}
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
                 {service.features.map((feature, idx) => (
-                  <div key={idx} className="feature-item text-sm font-semibold text-orizon-primary pl-7 relative">
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-orizon-primary rounded-full" />
+                  <div key={idx} className="feature-item text-xs sm:text-sm font-semibold text-orizon-primary pl-5 sm:pl-7 relative">
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-orizon-primary rounded-full" />
                     {feature}
                   </div>
                 ))}
               </div>
-              <div className="flex gap-4 mb-4">
+              <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4">
                 {service.stats.map((stat, idx) => (
-                  <div key={idx} className="stat-card p-3 rounded-xl bg-orizon-primary/10 border-2 border-orizon-primary text-orizon-primary">
-                    <div className="text-lg font-black text-orizon-primary">{stat.value}</div>
-                    <div className="text-xs font-bold text-orizon-primary/80">{stat.label}</div>
+                  <div key={idx} className="stat-card p-2 sm:p-3 rounded-lg sm:rounded-xl bg-orizon-primary/10 border-2 border-orizon-primary text-orizon-primary">
+                    <div className="text-base sm:text-lg font-black text-orizon-primary">{stat.value}</div>
+                    <div className="text-[10px] sm:text-xs font-bold text-orizon-primary/80">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -212,6 +214,17 @@ const ScrollStackServices = () => {
             .scroll-stack-card {
               overflow: hidden;
               padding: 0 !important;
+            }
+            /* Mobile tweaks: allow inner scroll if content is taller than viewport, and tighten spacing */
+            @media (max-width: 640px) {
+              .scroll-stack-card { overflow: hidden; }
+              .scroll-stack-card .content-root { padding: 0.75rem !important; gap: 0.5rem !important; overflow: auto; -webkit-overflow-scrolling: touch; min-height: 100%; }
+              .scroll-stack-card .feature-item { font-size: 0.7rem; }
+              .scroll-stack-card h2 { font-size: 1.5rem; }
+              .scroll-stack-card p { margin-bottom: 0.5rem; }
+              /* Soften float animation inside ScrollStack to prevent overflow on small screens */
+              @keyframes float-soft { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+              .scroll-stack-section .animate-float { animation-name: float-soft !important; }
             }
           `}</style>
           </ScrollStackItem>

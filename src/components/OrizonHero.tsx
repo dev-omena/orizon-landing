@@ -65,38 +65,38 @@ const OrizonHero = () => {
            backgroundPosition: '0 0, 0 0'
          }} />
         
-        <div className="text-center px-4 relative z-10 flex flex-col items-center justify-center">
-          <p className="text-2xl md:text-3xl text-orizon-secondary/80 max-w-4xl mx-auto mb-16 leading-relaxed font-bold">
+        <div className="text-center px-3 sm:px-4 md:px-6 relative z-10 flex flex-col items-center justify-center">
+          <p className="text-base sm:text-lg md:text-2xl lg:text-3xl text-orizon-secondary/80 max-w-4xl mx-auto mb-8 sm:mb-12 md:mb-16 leading-relaxed font-bold">
             We are always striving for methods to generate phenomenal results.
-            <br />
-            We have our interest at the heart of everything we do, so we naturally become an extended arm of their business.
+            <br className="hidden sm:block" />
+            <span className="sm:inline"> </span>We have our interest at the heart of everything we do, so we naturally become an extended arm of their business.
           </p>
-          
+
           {/* Statistics Section */}
-          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-6xl mx-auto mb-16">
+          <div ref={statsRef} className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 md:gap-12 lg:gap-16 max-w-6xl mx-auto mb-8 sm:mb-12 md:mb-16">
             <div className="text-center">
-              <div className="text-6xl md:text-7xl font-black text-orizon-secondary mb-3">
+              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-orizon-secondary mb-2 md:mb-3">
                 {counts.countries}
               </div>
-              <div className="text-xl md:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
+              <div className="text-sm sm:text-base md:text-xl lg:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
                 Countries Served
               </div>
             </div>
-            
+
             <div className="text-center">
-              <div className="text-6xl md:text-7xl font-black text-orizon-secondary mb-3">
+              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-orizon-secondary mb-2 md:mb-3">
                 {counts.clients}+
               </div>
-              <div className="text-xl md:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
+              <div className="text-sm sm:text-base md:text-xl lg:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
                 Happy Clients
               </div>
             </div>
-            
+
             <div className="text-center">
-              <div className="text-6xl md:text-7xl font-black text-orizon-secondary mb-3">
+              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-orizon-secondary mb-2 md:mb-3">
                 {counts.projects}+
               </div>
-              <div className="text-xl md:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
+              <div className="text-sm sm:text-base md:text-xl lg:text-2xl text-orizon-secondary/70 font-bold uppercase tracking-wider">
                 Projects Completed
               </div>
             </div>

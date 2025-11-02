@@ -51,8 +51,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-secondary p-0">
-      <div className="relative min-h-screen bg-primary border border-orizon-secondary rounded-lg overflow-hidden m-2">
+    <div className="min-h-screen bg-secondary p-0 overflow-x-hidden">
+      <div className="relative min-h-screen bg-primary border border-orizon-secondary rounded-lg overflow-hidden m-1 sm:m-2">
      
         {/* Connected Hero Section - Header + Waves + Separator + Banner + Separator as one unit */}
         <div className="flex flex-col bg-primary relative overflow-hidden" style={{ height: '100vh', minHeight: '100vh', maxHeight: '100vh' }}>

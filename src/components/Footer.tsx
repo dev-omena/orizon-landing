@@ -12,9 +12,9 @@ const Footer = () => {
   };
 
   return (
-    <footer className="w-full bg-orizon-primary py-4 flex items-center justify-center">
+    <footer className="w-full bg-orizon-primary py-3 sm:py-4 flex items-center justify-center">
       {/* Orizon Icon */}
-      <button 
+      <button
         onClick={scrollToTop}
         className="flex items-center justify-center hover:opacity-70 transition-opacity cursor-pointer"
         aria-label="Scroll to top"
@@ -24,7 +24,7 @@ const Footer = () => {
           alt="Orizon Logo"
           width={50}
           height={50}
-          className="object-contain"
+          className="w-10 h-10 sm:w-12 sm:h-12 md:w-[50px] md:h-[50px] object-contain"
         />
       </button>
     </footer>

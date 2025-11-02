@@ -73,15 +73,15 @@ export default function InteractiveCTA() {
   }, [hovered]);
 
   return (
-    <div className="relative flex items-center justify-center h-full">
+    <div className="relative flex items-center justify-center h-full px-4">
       <div
         className="relative cursor-pointer"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
         {/* GO Button */}
-        <div className={`relative z-10 w-32 h-32 bg-orizon-secondary rounded-full flex items-center justify-center transition-all duration-700 ease-out ${hovered ? 'opacity-0 scale-75' : 'opacity-100 scale-100'}`}>
-          <div className="text-orizon-primary font-black text-7xl tracking-wider uppercase">
+        <div className={`relative z-10 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-orizon-secondary rounded-full flex items-center justify-center transition-all duration-700 ease-out ${hovered ? 'opacity-0 scale-75' : 'opacity-100 scale-100'}`}>
+          <div className="text-orizon-primary font-black text-5xl sm:text-6xl md:text-7xl tracking-wider uppercase">
             GO
           </div>
         </div>
@@ -90,8 +90,8 @@ export default function InteractiveCTA() {
         <div
           className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-700 ease-out ${hovered ? 'pulse-glow' : ''}`}
           style={{
-            width: hovered ? '480px' : '128px',
-            height: hovered ? '480px' : '128px',
+            width: hovered ? 'min(480px, 90vw)' : 'clamp(96px, 25vw, 128px)',
+            height: hovered ? 'min(480px, 90vw)' : 'clamp(96px, 25vw, 128px)',
             border: hovered ? '4px solid #272860' : '4px solid #f8e800',
             boxShadow: hovered ? '0 0 32px #272860' : undefined,
             background: hovered ? '#f8e800' : 'transparent',
@@ -155,7 +155,7 @@ export default function InteractiveCTA() {
                           left: `${x}px`,
                           top: `${y}px`,
                           transform: `translate(-50%, -50%) rotate(${angle + 90}deg)`,
-                          fontSize: '4.5rem',
+                          fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
                           fontWeight: 400,
                           display: 'inline-block',
                           fontVariationSettings: "'wght' 400, 'wdth' 100",
@@ -191,7 +191,7 @@ export default function InteractiveCTA() {
                           left: `${x}px`,
                           top: `${y}px`,
                           transform: `translate(-50%, -50%) rotate(${angle - 90}deg)`,
-                          fontSize: '4.5rem',
+                          fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
                           fontWeight: 400,
                           display: 'inline-block',
                           fontVariationSettings: "'wght' 400, 'wdth' 100",
